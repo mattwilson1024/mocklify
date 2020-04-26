@@ -35,7 +35,7 @@ const MOCK_USERS: IUser[] = [
 
 const MOCK_USER_FACTORY = new Mocklify<IUser>(MOCK_USERS);
 
-describe('Mocklify -> getOne()', () => {
+describe('Mocklify -> getMany()', () => {
 
   it ('[where] allows filtering based on a predicate function', () => {
     const results = MOCK_USER_FACTORY.getMany(
@@ -55,7 +55,7 @@ describe('Mocklify -> getOne()', () => {
     ]);
   })
 
-  it ('allows overriding props', () => {
+  it ('[override] allows overriding props', () => {
     const results = MOCK_USER_FACTORY.getMany(
       override({ age: 99 })
     );
@@ -78,7 +78,7 @@ describe('Mocklify -> getOne()', () => {
     ]);
   });
 
-  it ('allows combination of where, omit, modify and override features (in the specified order)', () => {
+  it ('[where>omit>modify>override] allows a chain of operators (in the specified order)', () => {
     const results = MOCK_USER_FACTORY.getMany(
       where(user => user.age > 40),
       omit(['age']),
@@ -87,9 +87,6 @@ describe('Mocklify -> getOne()', () => {
         user.name = user.name.split(' ')?.[0];
       }),
       override({ isAdmin: true })
-      // override({ isAdmin: true }, { from: 0, to: 10 }),
-      // override({ isAdmin: false }, { from: 11 }),
-      // override({ isOnline: true }, { random: 75 })
     );
 
     expect(results).toEqual([
