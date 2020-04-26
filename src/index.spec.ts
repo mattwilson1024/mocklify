@@ -1,7 +1,5 @@
 import { Mocklify } from '.';
-import { modify } from './operators/modify';
-import { omit } from './operators/omit';
-import { where } from './operators/where';
+import { modify, omit, override, where } from './operators';
 
 interface IUser {
   id: string;
@@ -57,15 +55,16 @@ describe('Mocklify -> getOne()', () => {
     ]);
   })
 
-  // it ('allows overriding props', () => {
-  //   const results = MOCK_USER_FACTORY.getMany(
-  //     override({ name: 'Overridden' }),
-  //     omit([ 'age' ])
-  //   );
-  //   expect(results).toEqual(Object.assign({}, MOCK_USERS[0], {
-  //     name: 'Overridden'
-  //   }));
-  // })
+  it ('allows overriding props', () => {
+    const results = MOCK_USER_FACTORY.getMany(
+      override({ age: 99 })
+    );
+    expect(results).toEqual([
+      Object.assign({}, MOCK_USERS[0], { age: 99 }),
+      Object.assign({}, MOCK_USERS[1], { age: 99 }),
+      Object.assign({}, MOCK_USERS[2], { age: 99 })
+    ]);
+  })
 
   it ('[modify] allows items to be modified using a provided modifier function', () => {
     const results = MOCK_USER_FACTORY.getMany(
@@ -79,7 +78,7 @@ describe('Mocklify -> getOne()', () => {
     ]);
   });
 
-  it ('allows combination of where, omit, modify and override features (in that order)', () => {
+  it ('allows combination of where, omit, modify and override features (in the specified order)', () => {
     const results = MOCK_USER_FACTORY.getMany(
       where(user => user.age > 40),
       omit(['age']),
@@ -87,9 +86,7 @@ describe('Mocklify -> getOne()', () => {
         user.id = `user_${index}`;
         user.name = user.name.split(' ')?.[0];
       }),
-      // override: {
-      //   isAdmin: true
-      // },
+      override({ isAdmin: true })
       // override({ isAdmin: true }, { from: 0, to: 10 }),
       // override({ isAdmin: false }, { from: 11 }),
       // override({ isOnline: true }, { random: 75 })
@@ -100,6 +97,7 @@ describe('Mocklify -> getOne()', () => {
         age: undefined,
         id: `user_0`,
         name: MOCK_USERS[2].name.split(' ')?.[0],
+        isAdmin: true
       }),
     ]);
   });
