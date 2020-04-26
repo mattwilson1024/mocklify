@@ -1,0 +1,1 @@
+export type Operator<T> = (items: T[]) => T[];
