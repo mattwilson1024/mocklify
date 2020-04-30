@@ -1,6 +1,6 @@
 import { mocklify } from '.';
 import { Limiter } from './limiter';
-import { modify, omit, override } from './operators';
+import { modify, omit, override, where } from './operators';
 import { IUser, MOCK_USERS } from './test-data';
 
 describe('getMany()', () => {
@@ -92,54 +92,28 @@ describe('getMany()', () => {
     ]);
   });
 
-
-
-  it ('[override > modify > omit] operators can be restricted to apply only on a subset of items', () => {
-    const limitToFirstTwoUsers: Limiter<IUser> = (user, index) => index >= 0 && index <= 1;
-    const limitToThirdUser: Limiter<IUser> = (user, index) => index === 2;
-    const limitToBob: Limiter<IUser> = (user, index) => user.name === 'Bob Bobson';
+  it ('[omit > ~override > ~modify > ~omit] operators can be restricted to apply only on a subset of items', () => {
+    const isWithinFirstTwoUsers: Limiter<IUser> = (user, index) => index >= 0 && index <= 1;
+    const isThirdUser: Limiter<IUser> = (user, index) => index === 2;
+    const isBob: Limiter<IUser> = (user, index) => user.name === 'Bob Bobson';
 
     const results = mocklify(MOCK_USERS).getMany().apply(
-      override({ age: 88 }, limitToFirstTwoUsers),
-      modify(user => user.age = 99, limitToThirdUser),
-      omit(['isOnline'], limitToBob)
+      omit(['isAdmin']),
+      where(isWithinFirstTwoUsers, [
+        override({ age: 88 })
+      ]),
+      where(isThirdUser, [
+        modify(user => user.age = 99)
+      ]),
+      where(isBob, [
+        omit(['isOnline'])
+      ])
     );
 
     expect(results).toEqual([
-      Object.assign({}, MOCK_USERS[0], { age: 88, isOnline: undefined }),
-      Object.assign({}, MOCK_USERS[1], { age: 88 }),
-      Object.assign({}, MOCK_USERS[2], { age: 99 }),
+      Object.assign({}, MOCK_USERS[0], { isAdmin: undefined, age: 88, isOnline: undefined }),
+      Object.assign({}, MOCK_USERS[1], { isAdmin: undefined, age: 88 }),
+      Object.assign({}, MOCK_USERS[2], { isAdmin: undefined, age: 99 }),
     ]);
   });
-
-
-
-  // it ('[where>omit>modify>override] allows a chain of operators (in the specified order)', () => {
-
-  //   const results = mocklify(MOCK_USERS).getMany(user => user.age > 35).apply(
-  //     override({ isAdmin: true }),
-  //     // where(nameStartsWithM, makeThemAnAdmin),
-  //     // where(user => user.age < 10, makeThemAnAdmin)
-  //   );
-
-  //   expect(results).toEqual([
-  //     MOCK_USERS[2]
-  //   ]);
-  // });
-
-
-  // it ('[withSubset] allows application of a chain of operators selectively for subsets of the data', () => {
-  //   const results = mocklify(MOCK_USERS).getMany(
-  //     override({ isAdmin: true }),
-  //     // withSubset({ toPecentage: 50 }, [
-  //     //   override({ age: 3 }),
-  //     //   modify(user => user.name = `Baby ${user.name}`)
-  //     // ]),
-  //   );
-  //   expect(results).toEqual([
-  //     Object.assign({}, MOCK_USERS[0], { isAdmin: true, age: 3 }),
-  //     Object.assign({}, MOCK_USERS[1], { isAdmin: true, age: 3 }),
-  //     Object.assign({}, MOCK_USERS[2], { isAdmin: true })
-  //   ]);
-  // })
 })

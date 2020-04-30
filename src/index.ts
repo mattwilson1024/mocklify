@@ -1,10 +1,11 @@
+import { DEFAULT_LIMITER } from './limiter';
 import { applyOperators, Operator } from './operator';
 
 export class MocklifyDataSet<T> {
   constructor(private filteredMocks: T[]) {}
 
   public apply(...operators: Operator<T>[]): T[] {
-    return applyOperators(this.filteredMocks, ...operators);
+    return applyOperators(this.filteredMocks, operators, DEFAULT_LIMITER);
   }
 }
 
