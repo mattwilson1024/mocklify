@@ -1,17 +1,8 @@
 import { Operator } from './operator';
 
-// export interface IQuery<T> {
-//   where?: (item: T) => boolean;
-//   omit?: Array<keyof T>,
-//   modify?: (itemDraft: Draft<T>, index: number) => void;
-//   override?: Partial<T>;
-// }
-
-export class Mocklify<T> {
+export class MocklifyInstance<T> {
   
-  constructor(private data: T[]) {
-
-  }
+  constructor(private data: T[]) {}
 
   public getMany(...operators: Operator<T>[]): T[]|null {
     let results: T[] = [...this.data];
@@ -21,4 +12,8 @@ export class Mocklify<T> {
     return results;
   }
   
+}
+
+export function mocklify<T>(dataSet: T[]): MocklifyInstance<T> {
+  return new MocklifyInstance(dataSet);
 }

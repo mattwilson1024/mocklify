@@ -1,51 +1,18 @@
-import { Mocklify } from '.';
+import { mocklify } from '.';
 import { modify, omit, override, where } from './operators';
+import { MOCK_USERS } from './test-data';
 
-interface IUser {
-  id: string;
-  name: string;
-  age: number;
-  isAdmin: boolean;
-  isOnline: boolean;
-}
-
-const MOCK_USERS: IUser[] = [
-  {
-    id: 'user1',
-    name: 'Bob Bobson',
-    age: 30,
-    isAdmin: true,
-    isOnline: false
-  },
-  {
-    id: 'user2',
-    name: 'Frank Butterworth',
-    age: 40,
-    isAdmin: false,
-    isOnline: false
-  },
-  {
-    id: 'user3',
-    name: 'Sally Sausage',
-    age: 50,
-    isAdmin: false,
-    isOnline: false
-  }
-];
-
-const MOCK_USER_FACTORY = new Mocklify<IUser>(MOCK_USERS);
-
-describe('Mocklify -> getMany()', () => {
+describe('getMany()', () => {
 
   it ('[where] allows filtering based on a predicate function', () => {
-    const results = MOCK_USER_FACTORY.getMany(
+    const results = mocklify(MOCK_USERS).getMany(
       where(user => user.age > 35)
     );
     expect(results).toEqual([ MOCK_USERS[1], MOCK_USERS[2] ]);
   });
 
   it ('[omit] allows certain props to be omitted', () => {
-    const results = MOCK_USER_FACTORY.getMany(
+    const results = mocklify(MOCK_USERS).getMany(
       omit(['name', 'age', 'isOnline'])
     );
     expect(results).toEqual([
@@ -56,7 +23,7 @@ describe('Mocklify -> getMany()', () => {
   })
 
   it ('[override] allows overriding props', () => {
-    const results = MOCK_USER_FACTORY.getMany(
+    const results = mocklify(MOCK_USERS).getMany(
       override({ age: 99 })
     );
     expect(results).toEqual([
@@ -67,7 +34,7 @@ describe('Mocklify -> getMany()', () => {
   })
 
   it ('[modify] allows items to be modified using a provided modifier function', () => {
-    const results = MOCK_USER_FACTORY.getMany(
+    const results = mocklify(MOCK_USERS).getMany(
       modify(user => user.age *= 2)
     );
 
@@ -79,7 +46,7 @@ describe('Mocklify -> getMany()', () => {
   });
 
   it ('[where>omit>modify>override] allows a chain of operators (in the specified order)', () => {
-    const results = MOCK_USER_FACTORY.getMany(
+    const results = mocklify(MOCK_USERS).getMany(
       where(user => user.age > 40),
       omit(['age']),
       modify((user, index) => {
