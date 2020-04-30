@@ -1,6 +1,7 @@
 import { mocklify } from '.';
+import { Limiter } from './limiter';
 import { modify, omit, override } from './operators';
-import { MOCK_USERS } from './test-data';
+import { IUser, MOCK_USERS } from './test-data';
 
 describe('getMany()', () => {
 
@@ -51,7 +52,7 @@ describe('getMany()', () => {
     ]);
   });
 
-  it ('[omit>modify>override] allows multiple operators to be applied as a chain', () => {
+  it ('[omit > modify > override] allows multiple operators to be applied as a chain', () => {
     const results = mocklify(MOCK_USERS).getMany(user => user.age > 40).apply(
       omit(['age']),
       modify((user, index) => {
@@ -71,7 +72,7 @@ describe('getMany()', () => {
     ]);
   });
 
-  it ('[override>modify] applies operators in the correct order', () => {
+  it ('[override > modify] applies operators in the correct order', () => {
     const overrideThenModify = mocklify(MOCK_USERS).getMany(user => user.age > 40).apply(
       override({ age: 20 }),
       modify(user => user.age *= 7)
@@ -93,27 +94,25 @@ describe('getMany()', () => {
 
 
 
+  it ('[override > modify > omit] operators can be restricted to apply only on a subset of items', () => {
+    const limitToFirstTwoUsers: Limiter<IUser> = (user, index) => index >= 0 && index <= 1;
+    const limitToThirdUser: Limiter<IUser> = (user, index) => index === 2;
+    const limitToBob: Limiter<IUser> = (user, index) => user.name === 'Bob Bobson';
 
-// it ('[where>omit>modify>override] allows a chain of operators (in the specified order)', () => {
-  //   const results = mocklify(MOCK_USERS).getMany(
-  //     where(user => user.age > 40),
-  //     omit(['age']),
-  //     modify((user, index) => {
-  //       user.id = `user_${index}`;
-  //       user.name = user.name.split(' ')?.[0];
-  //     }),
-  //     override({ isAdmin: true })
-  //   );
+    const results = mocklify(MOCK_USERS).getMany().apply(
+      override({ age: 88 }, limitToFirstTwoUsers),
+      modify(user => user.age = 99, limitToThirdUser),
+      omit(['isOnline'], limitToBob)
+    );
 
-  //   expect(results).toEqual([
-  //     Object.assign({}, MOCK_USERS[2], {
-  //       age: undefined,
-  //       id: `user_0`,
-  //       name: MOCK_USERS[2].name.split(' ')?.[0],
-  //       isAdmin: true
-  //     }),
-  //   ]);
-  // });
+    expect(results).toEqual([
+      Object.assign({}, MOCK_USERS[0], { age: 88, isOnline: undefined }),
+      Object.assign({}, MOCK_USERS[1], { age: 88 }),
+      Object.assign({}, MOCK_USERS[2], { age: 99 }),
+    ]);
+  });
+
+
 
   // it ('[where>omit>modify>override] allows a chain of operators (in the specified order)', () => {
 
