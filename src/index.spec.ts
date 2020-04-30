@@ -1,93 +1,119 @@
-import { Mocklify } from './index';
+import { mocklify } from '.';
+import { Limiter } from './limiter';
+import { modify, omit, override, where } from './operators';
+import { IUser, MOCK_USERS } from './test-data';
 
-interface IUser {
-  id: string;
-  name: string;
-  age: number;
-  isAdmin: boolean;
-}
+describe('getMany()', () => {
 
-const MOCK_USERS: IUser[] = [
-  {
-    id: 'user1',
-    name: 'Bob Bobson',
-    age: 30,
-    isAdmin: true, 
-  },
-  {
-    id: 'user2',
-    name: 'Frank Butterworth',
-    age: 40,
-    isAdmin: false
-  },
-  {
-    id: 'user3',
-    name: 'Sally Sausage',
-    age: 50,
-    isAdmin: false
-  }
-];
-
-const MOCK_USER_FACTORY = new Mocklify<IUser>(MOCK_USERS);
-
-describe('Mocklify -> getOne()', () => {
-
-  it ('allows filtering based on a predicate function', () => {
-    const result = MOCK_USER_FACTORY.getOne({
-      where: user => user.age > 35
-    });
-    expect(result).toEqual(MOCK_USERS[1]);
+  it ('[] allows fetching all data', () => {
+    const results = mocklify(MOCK_USERS).getMany().apply();
+    expect(results).toEqual(MOCK_USERS);
   });
 
-  it ('allows certain props to be omitted', () => {
-    const result = MOCK_USER_FACTORY.getOne({
-      omit: ['name', 'age']
-    });
-    expect(result).toEqual({ id: MOCK_USERS[0].id, isAdmin: MOCK_USERS[0].isAdmin });
-  })
+  it ('[] allows data to be filtered by a predicate', () => {
+    const results = mocklify(MOCK_USERS).getMany(user => user.age > 35).apply();
 
-  it ('allows overriding props', () => {
-    const result = MOCK_USER_FACTORY.getOne({
-      override: {
-        name: 'Overridden'
-      }
-    });
-    expect(result).toEqual(Object.assign({}, MOCK_USERS[0], {
-      name: 'Overridden'
-    }));
-  })
-
-  it ('allows modification of item', () => {
-    const result = MOCK_USER_FACTORY.getOne({
-      modify: user => {
-        user.age *= 2
-      }
-    });
-
-    expect(result).toEqual(Object.assign({}, MOCK_USERS[0], {
-      age: 60
-    }));
+    expect(results).toEqual([ MOCK_USERS[1], MOCK_USERS[2] ]);
   });
 
-  it ('allows combination of where, omit, modify and override features (in that order)', () => {
-    const result = MOCK_USER_FACTORY.getOne({
-      where: user => user.age > 40,
-      omit: ['age'],
-      modify: user => {
+  it ('[omit] allows specific props to be omitted from results', () => {
+    const results = mocklify(MOCK_USERS).getMany(user => user.age > 35).apply(
+      omit(['age', 'isAdmin'])
+    );
+
+    expect(results).toEqual([
+      Object.assign({}, MOCK_USERS[1], { age: undefined, isAdmin: undefined }),
+      Object.assign({}, MOCK_USERS[2], { age: undefined, isAdmin: undefined }),
+    ]);
+  });
+
+  it ('[override] allows overriding specific props of results', () => {
+    const results = mocklify(MOCK_USERS).getMany(user => user.age > 35).apply(
+      override({ age: 99 }),
+    );
+
+    expect(results).toEqual([
+      Object.assign({}, MOCK_USERS[1], { age: 99 }),
+      Object.assign({}, MOCK_USERS[2], { age: 99 }),
+    ]);
+  });
+
+  it ('[modify] allows immutable modification of results', () => {
+    const results = mocklify(MOCK_USERS).getMany(user => user.age > 35).apply(
+      modify((user, index) => {
+        user.id = `user_${index}`;
+        user.age *= 2;
+      })
+    );
+
+    expect(results).toEqual([
+      Object.assign({}, MOCK_USERS[1], { id: 'user_0', age: MOCK_USERS[1].age * 2 }),
+      Object.assign({}, MOCK_USERS[2], { id: 'user_1', age: MOCK_USERS[2].age * 2 }),
+    ]);
+  });
+
+  it ('[omit > modify > override] allows multiple operators to be applied as a chain', () => {
+    const results = mocklify(MOCK_USERS).getMany(user => user.age > 40).apply(
+      omit(['age']),
+      modify((user, index) => {
+        user.id = `user_${index}`;
         user.name = user.name.split(' ')?.[0];
-      },
-      override: {
-        isAdmin: true
-      },
-    });
+      }),
+      override({ isAdmin: true })
+    );
 
-    expect(result).toEqual(Object.assign({}, MOCK_USERS[2], {
-      age: undefined,
-      name: 'Sally',
-      isAdmin: true
-    }));
+    expect(results).toEqual([
+      Object.assign({}, MOCK_USERS[2], {
+        age: undefined,
+        id: `user_0`,
+        name: MOCK_USERS[2].name.split(' ')?.[0],
+        isAdmin: true
+      }),
+    ]);
   });
 
+  it ('[override > modify] applies operators in the correct order', () => {
+    const overrideThenModify = mocklify(MOCK_USERS).getMany(user => user.age > 40).apply(
+      override({ age: 20 }),
+      modify(user => user.age *= 7)
+    );
 
+    const modifyThenOverride = mocklify(MOCK_USERS).getMany(user => user.age > 40).apply(
+      modify(user => user.age *= 7),
+      override({ age: 20 }),
+    );
 
+    expect(overrideThenModify).toEqual([
+      Object.assign({}, MOCK_USERS[2], { age: 20 * 7 })
+    ]);
+
+    expect(modifyThenOverride).toEqual([
+      Object.assign({}, MOCK_USERS[2], { age: 20 })
+    ]);
+  });
+
+  it ('[omit > ~override > ~modify > ~omit] operators can be restricted to apply only on a subset of items', () => {
+    const isWithinFirstTwoUsers: Limiter<IUser> = (user, index) => index >= 0 && index <= 1;
+    const isThirdUser: Limiter<IUser> = (user, index) => index === 2;
+    const isBob: Limiter<IUser> = (user, index) => user.name === 'Bob Bobson';
+
+    const results = mocklify(MOCK_USERS).getMany().apply(
+      omit(['isAdmin']),
+      where(isWithinFirstTwoUsers, [
+        override({ age: 88 })
+      ]),
+      where(isThirdUser, [
+        modify(user => user.age = 99)
+      ]),
+      where(isBob, [
+        omit(['isOnline'])
+      ])
+    );
+
+    expect(results).toEqual([
+      Object.assign({}, MOCK_USERS[0], { isAdmin: undefined, age: 88, isOnline: undefined }),
+      Object.assign({}, MOCK_USERS[1], { isAdmin: undefined, age: 88 }),
+      Object.assign({}, MOCK_USERS[2], { isAdmin: undefined, age: 99 }),
+    ]);
+  });
 })

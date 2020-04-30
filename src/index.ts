@@ -1,47 +1,25 @@
-import { Draft, produce } from 'immer';
+import { DEFAULT_LIMITER } from './limiter';
+import { applyOperators, Operator } from './operator';
 
-export interface IQuery<T> {
-  where?: (item: T) => boolean;
-  omit?: Array<keyof T>,
-  modify?: (itemDraft: Draft<T>) => void;
-  override?: Partial<T>;
+export class MocklifyDataSet<T> {
+  constructor(private filteredMocks: T[]) {}
+
+  public apply(...operators: Operator<T>[]): T[] {
+    return applyOperators(this.filteredMocks, operators, DEFAULT_LIMITER);
+  }
 }
 
+type FilterPredicate<T> = (item: T) => boolean;
 
-export class Mocklify<T> {
-  
-  constructor(private data: T[]) {
+export class MocklifyInstance<T> {
+  constructor(private allMocks: T[]) {}
 
+  public getMany(filterPredicate?: FilterPredicate<T>): MocklifyDataSet<T> {
+    const filteredMocks = filterPredicate ? this.allMocks.filter(mock => filterPredicate(mock)) : this.allMocks;
+    return new MocklifyDataSet(filteredMocks);
   }
+}
 
-  public getOne(query: IQuery<T>): T|null {
-    const items = query.where
-      ? this.data.filter(item => query.where?.(item))
-      : this.data;
-    
-    const firstItem = items?.[0];
-
-    if (!firstItem) {
-      return null;
-    }
-
-    const result = produce(firstItem, draft => {
-      if (query.omit && query.omit.length) {
-        query.omit.forEach(propToOmit => {
-          delete (draft as any)[propToOmit as string]; // TODO: Make this line less terrible :D
-        })
-      }
-
-      if (query.modify) {
-        query.modify(draft);
-      }
-
-      if (query.override) {
-        Object.assign(draft, query.override);
-      }
-    });
-
-    return result;
-  }
-  
+export function mocklify<T>(allMocks: T[]): MocklifyInstance<T> {
+  return new MocklifyInstance(allMocks);
 }

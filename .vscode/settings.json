@@ -1,0 +1,4 @@
+{
+  "typescriptHero.imports.organizeOnSave": true,
+  "typescriptHero.imports.multiLineWrapThreshold": 999
+}
