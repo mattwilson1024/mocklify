@@ -1,15 +1,11 @@
-import { Operator } from './operator';
+import { applyOperators, Operator } from './operator';
 
 export class MocklifyInstance<T> {
   
   constructor(private data: T[]) {}
 
-  public getMany(...operators: Operator<T>[]): T[]|null {
-    let results: T[] = [...this.data];
-    operators.forEach(operator => {
-      results = operator(results);
-    });
-    return results;
+  public getMany(...operators: Operator<T>[]): T[] {
+    return applyOperators(this.data, ...operators);
   }
   
 }

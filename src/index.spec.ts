@@ -1,5 +1,6 @@
 import { mocklify } from '.';
 import { modify, omit, override, where } from './operators';
+import { withSubset } from './operators/withSubset';
 import { MOCK_USERS } from './test-data';
 
 describe('getMany()', () => {
@@ -65,4 +66,18 @@ describe('getMany()', () => {
       }),
     ]);
   });
+
+  it ('[withSubset] allows application of a chain of operators selectively for subsets of the data', () => {
+    const results = mocklify(MOCK_USERS).getMany(
+      override({ isAdmin: true }),
+      withSubset({ fromIndex: 0, toIndex: 1 }, [
+        override({ age: 3 })
+      ]),
+    );
+    expect(results).toEqual([
+      Object.assign({}, MOCK_USERS[0], { isAdmin: true, age: 3 }),
+      Object.assign({}, MOCK_USERS[1], { isAdmin: true, age: 3 }),
+      Object.assign({}, MOCK_USERS[2], { isAdmin: true })
+    ]);
+  })
 })
