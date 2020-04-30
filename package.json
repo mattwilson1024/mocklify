@@ -6,7 +6,8 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "test": "jest"
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
