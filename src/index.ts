@@ -1,15 +1,24 @@
 import { applyOperators, Operator } from './operator';
 
-export class MocklifyInstance<T> {
-  
-  constructor(private data: T[]) {}
+export class MocklifyDataSet<T> {
+  constructor(private filteredMocks: T[]) {}
 
-  public getMany(...operators: Operator<T>[]): T[] {
-    return applyOperators(this.data, ...operators);
+  public apply(...operators: Operator<T>[]): T[] {
+    return applyOperators(this.filteredMocks, ...operators);
   }
-  
 }
 
-export function mocklify<T>(dataSet: T[]): MocklifyInstance<T> {
-  return new MocklifyInstance(dataSet);
+type FilterPredicate<T> = (item: T) => boolean;
+
+export class MocklifyInstance<T> {
+  constructor(private allMocks: T[]) {}
+
+  public getMany(filterPredicate?: FilterPredicate<T>): MocklifyDataSet<T> {
+    const filteredMocks = filterPredicate ? this.allMocks.filter(mock => filterPredicate(mock)) : this.allMocks;
+    return new MocklifyDataSet(filteredMocks);
+  }
+}
+
+export function mocklify<T>(allMocks: T[]): MocklifyInstance<T> {
+  return new MocklifyInstance(allMocks);
 }
