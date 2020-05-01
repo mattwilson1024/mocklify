@@ -4,7 +4,9 @@ import { Scope } from './scope';
 export type OperatorActionFunction<T> = (items: T[], limiter: Limiter<T>) => T[];
 
 export abstract class Operator<T> {
-  constructor(public name: string, public action: OperatorActionFunction<T>) {}
+  constructor(public name: string) {}
+
+  abstract action(items: T[], limiter: Limiter<T>): T[];
 }
 
 export function applyOperators<T>(items: T[], operators: Array<Scope<T>|Operator<T>>, limiter: Limiter<T>): T[] {

@@ -1,27 +1,28 @@
-// import produce from 'immer';
 import { produce } from 'immer';
 
 import { Limiter } from '../limiter';
-import { Operator, OperatorActionFunction } from '../operator';
+import { Operator } from '../operator';
 
 class OmitOperator<T> extends Operator<T> {
-  constructor(action: OperatorActionFunction<T>) {
-    super('omit', action);
+  constructor(private propsToOmit: Array<keyof T>) {
+    super('omit');
+  }
+
+  action(items: T[], limiter: Limiter<T>): T[] {
+    return items.map((item, index) => {
+      if (!limiter(item, index)) { return item; }
+      
+      return produce(item, draft => { this.deletePropsFromObject(draft, this.propsToOmit); });
+    });
+  }
+
+  private deletePropsFromObject(item: any, propsToDelete: any[]) {
+    propsToDelete.forEach((propToOmit: string) => {
+      delete item[propToOmit]
+    });
   }
 }
 
 export function omit<T>(propsToOmit: Array<keyof T>): OmitOperator<T> {
-  return new OmitOperator((items: T[], limiter: Limiter<T>) => {
-    return items.map((item, index) => {
-      if (!limiter(item, index)) { return item; }
-
-      return produce(item, draft => { deletePropsFromObject(draft, propsToOmit); });
-    });
-  });
-}
-
-function deletePropsFromObject(item: any, propsToDelete: any[]) {
-  propsToDelete.forEach((propToOmit: string) => {
-    delete item[propToOmit]
-  });
+  return new OmitOperator(propsToOmit);
 }
