@@ -3,7 +3,7 @@ import { Draft, produce } from 'immer';
 import { Limiter } from '../limiter';
 import { Operator } from '../operator';
 
-type ModifierFunction<T> = (itemDraft: Draft<T>, index: number) => void;
+type ModifierFunction<T> = (itemDraft: Draft<T>, index: number, allItems: T[]) => void;
 
 class ModifyOperator<T> extends Operator<T> {
   constructor(private modifierFunction: ModifierFunction<T>) {
@@ -14,7 +14,7 @@ class ModifyOperator<T> extends Operator<T> {
     return items.map((item, index) => {
       if (!limiter(item, index)) { return item; }
       
-      return produce(item, draft => { this.modifierFunction(draft, index) });
+      return produce(item, draft => { this.modifierFunction(draft, index, items) });
     });
   }
 }

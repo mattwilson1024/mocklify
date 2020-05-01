@@ -64,6 +64,21 @@ describe('getMany()', () => {
     ]);
   });
 
+  it ('[modify] modify callback provides the current item, its index and the full array of items', () => {
+    const results = mocklify(MOCK_USERS)
+      .getMany(user => user.age > 35)
+      .apply(
+        modify((user, index, allUsers) => {
+          user.name = `${user.name} (user ${index + 1} of ${allUsers.length})`;
+        })
+      );
+
+    expect(results).toEqual([
+      Object.assign({}, MOCK_USERS[1], { name: `${MOCK_USERS[1].name} (user 1 of 2)` }),
+      Object.assign({}, MOCK_USERS[2], { name: `${MOCK_USERS[2].name} (user 2 of 2)` }),
+    ]);
+  });
+
   it('[omit > modify > override] allows multiple operators to be applied as a chain', () => {
     const results = mocklify(MOCK_USERS)
       .getMany(user => user.age > 40)
