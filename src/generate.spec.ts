@@ -1,16 +1,6 @@
 import { mocklify } from '.';
-import { IUser, MOCK_USERS } from './test-data';
+import { MOCK_USERS, UserFactory } from './test-data';
 import { omit } from "./operators";
-
-const UserFactory = function(): IUser {
-    return {
-        id: 'userX',
-        name: 'bill',
-        age: 22,
-        isAdmin: false,
-        isOnline: false
-    }
-}
 
 describe('generate()', () => {
 
