@@ -4,7 +4,7 @@ import { IUser, MOCK_USERS } from './test-data/test-data';
 describe('getMany()', () => {
 
   it('should allow the new api', () => {
-    const whereNameIsBob = (user: IUser) => user.name.includes('Bob');
+    const whereNameIsBob = (user: IUser) => user.lastName === 'Potter';
     // const usersNamedJane = UserFactory;
 
     const results = mocklify<IUser>()
@@ -26,8 +26,7 @@ describe('getMany()', () => {
       .getAll();
 
       expect(results.length).toBe(10000);
-      expect(results.every(user => user.name.includes('Bob')))
-      // expect(results).toEqual(MOCK_USERS);
+      expect(results.every(user => user.lastName === 'Potter'));
   })
 
 //   it ('[] allows fetching all data', () => {

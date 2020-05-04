@@ -13,7 +13,7 @@ describe('add()', () => {
   });
 
   it('throws an error if no items match the predicate', () => {
-    const whereNameDoesntExist: AddPredicate<IUser> = user => user.name.includes('Nonexistant user');
+    const whereNameDoesntExist: AddPredicate<IUser> = user => user.firstName === 'Nonexistant user';
 
     expect(() => {
       mocklify<IUser>()
@@ -22,18 +22,32 @@ describe('add()', () => {
     }).toThrow();
   });
 
-  it('pads the input to the target length', () => {
-    const whereNameIsBob: AddPredicate<IUser> = user => user.name.includes('Bob');
+  it('pads the results to the target length if the number of matches is less than the target length', () => {
+    const whereNameIsBob: AddPredicate<IUser> = user => user.lastName === 'Potter';
 
     const results = mocklify<IUser>()
       .add(50, MOCK_USERS, whereNameIsBob)
       .getAll();
 
       expect(results.length).toBe(50);
-      expect(results.every(user => user.name.includes('Bob')));
+      expect(results.every(user => user.lastName === 'Potter'));
   });
 
-  it('trims input if it excededs target length', () => {
+  it('should repeat the matched items to reach the target length when padding', () => {
+    const results = mocklify<IUser>()
+      .add(12, MOCK_USERS, user => user.lastName === 'Potter')
+      .getAll();
+
+    expect(results.length).toBe(12);
+    expect(results[0]).toEqual(results[6]);
+    expect(results[1]).toEqual(results[7]);
+    expect(results[2]).toEqual(results[8]);
+    expect(results[3]).toEqual(results[9]);
+    expect(results[4]).toEqual(results[10]);
+    expect(results[5]).toEqual(results[11]);
+  });
+
+  it('trims the results down if the number of matches exceeds the target length', () => {
     const results = mocklify<IUser>()
       .add(1, MOCK_USERS)
       .getAll();
