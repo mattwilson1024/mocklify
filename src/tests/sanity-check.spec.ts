@@ -7,7 +7,7 @@ describe('getMany()', () => {
     const whereNameIsBob = (user: IUser) => user.lastName === 'Potter';
     // const usersNamedJane = UserFactory;
 
-    const results = mocklify<IUser>()
+    const results: IUser[] = mocklify<IUser>()
       .add(10000, MOCK_USERS, whereNameIsBob)
       // .generate(25, usersNamedJane)
       // .filter(user => age > 35)

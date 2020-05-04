@@ -23,10 +23,10 @@ describe('add()', () => {
   });
 
   it('pads the results to the target length if the number of matches is less than the target length', () => {
-    const whereNameIsBob: AddPredicate<IUser> = user => user.lastName === 'Potter';
+    const whereNameIsPotter: AddPredicate<IUser> = user => user.lastName === 'Potter';
 
     const results = mocklify<IUser>()
-      .add(50, MOCK_USERS, whereNameIsBob)
+      .add(50, MOCK_USERS, whereNameIsPotter)
       .getAll();
 
       expect(results.length).toBe(50);
