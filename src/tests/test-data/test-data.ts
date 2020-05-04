@@ -1,4 +1,3 @@
-
 export interface ITag {
   id: string;
   name: string;
@@ -1481,3 +1480,16 @@ export const MOCK_USERS: IUser[] = [
       points: 196
   }
 ];
+
+export const MOCK_USER_FACTORY = (index: number): IUser => {
+  return {
+    id: `user_${index}`,
+    firstName: 'FirstName',
+    lastName: 'LastName',
+    note: '',
+    tagIds: [ ],
+    isAdmin: false,
+    isOnline: false,
+    points: 0
+  };
+};

@@ -2,15 +2,9 @@ import { DEFAULT_LIMITER } from './limiter';
 import { applyOperators, Operator } from './operator';
 import { Scope } from './scope';
 
-export class MocklifyDataSet<T> {
-  constructor(private filteredMocks: T[]) {}
-
-  public apply(...operators: Array<Scope<T>|Operator<T>>): T[] {
-    return applyOperators(this.filteredMocks, operators, DEFAULT_LIMITER);
-  }
-}
-
 export type FilterPredicate<T> = (item: T, index: number, allItems: T[]) => boolean;
+
+export type MockFactory<T> = (index: number) => T;
 
 export class MocklifyInstance<T> {
   private data: T[] = [];
@@ -54,8 +48,14 @@ export class MocklifyInstance<T> {
     return this;
   }
 
-  public generate() {
+  public generate(count: number, factory: MockFactory<T>): MocklifyInstance<T> {
+    let newItems: T[] = [];
+    for (let i = 0; i < count; i++) {
+      newItems.push(factory(i));
+    }
+    this.data = this.data.concat(newItems);
 
+    return this;
   }
 
   public filter(predicate: FilterPredicate<T>): MocklifyInstance<T> {
