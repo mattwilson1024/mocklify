@@ -10,7 +10,6 @@ export class MocklifyDataSet<T> {
   }
 }
 
-export type AddPredicate<T> = (item: T, index: number, allItems: T[]) => boolean;
 export type FilterPredicate<T> = (item: T, index: number, allItems: T[]) => boolean;
 
 export class MocklifyInstance<T> {
@@ -18,7 +17,7 @@ export class MocklifyInstance<T> {
 
   constructor() {}
 
-  public add(targetLength: number, items: T[], predicate?: AddPredicate<T>): MocklifyInstance<T> {
+  public add(targetLength: number, items: T[], predicate?: FilterPredicate<T>): MocklifyInstance<T> {
     const matchingItems = predicate ? items.filter(predicate) : items;
     const matchingItemCount = matchingItems.length;
 
@@ -49,7 +48,7 @@ export class MocklifyInstance<T> {
     return this;
   }
 
-  public addAll(items: T[], predicate?: AddPredicate<T>): MocklifyInstance<T> {
+  public addAll(items: T[], predicate?: FilterPredicate<T>): MocklifyInstance<T> {
     const matchingItems = predicate ? items.filter(predicate) : items;
     this.data = this.data.concat(matchingItems);
     return this;

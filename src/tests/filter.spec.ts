@@ -1,4 +1,4 @@
-import { AddPredicate, FilterPredicate, mocklify } from '../main';
+import { FilterPredicate, mocklify } from '../main';
 import { IUser, MOCK_USERS } from './test-data/test-data';
 
 describe('filter()', () => {
@@ -15,7 +15,7 @@ describe('filter()', () => {
   });
 
   it('filters items to those that match predicate', () => {
-    const whereLastNameIsPotter: AddPredicate<IUser> = user => user.lastName === 'Potter';
+    const whereLastNameIsPotter: FilterPredicate<IUser> = user => user.lastName === 'Potter';
     const whereFirstNameIsHarry: FilterPredicate<IUser> = user => user.firstName === 'Harry';
 
     const results: IUser[] = mocklify<IUser>()

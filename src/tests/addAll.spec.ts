@@ -1,10 +1,10 @@
-import { AddPredicate, mocklify } from '../main';
+import { FilterPredicate, mocklify } from '../main';
 import { IUser, MOCK_USERS } from './test-data/test-data';
 
 describe('addAll()', () => {
 
   it('adds all matching items', () => {
-    const whereNameIsPotter: AddPredicate<IUser> = user => user.lastName === 'Potter';
+    const whereNameIsPotter: FilterPredicate<IUser> = user => user.lastName === 'Potter';
 
     const results: IUser[] = mocklify<IUser>()
       .addAll(MOCK_USERS, whereNameIsPotter)

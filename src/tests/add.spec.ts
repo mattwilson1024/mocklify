@@ -1,4 +1,4 @@
-import { AddPredicate, mocklify } from '../main';
+import { FilterPredicate, mocklify } from '../main';
 import { IUser, MOCK_USERS } from './test-data/test-data';
 
 describe('add()', () => {
@@ -13,7 +13,7 @@ describe('add()', () => {
   });
 
   it('throws an error if no items match the predicate', () => {
-    const whereNameDoesntExist: AddPredicate<IUser> = user => user.firstName === 'Nonexistant user';
+    const whereNameDoesntExist: FilterPredicate<IUser> = user => user.firstName === 'Nonexistant user';
 
     expect(() => {
       mocklify<IUser>()
@@ -23,7 +23,7 @@ describe('add()', () => {
   });
 
   it('pads the results to the target length if the number of matches is less than the target length', () => {
-    const whereNameIsPotter: AddPredicate<IUser> = user => user.lastName === 'Potter';
+    const whereNameIsPotter: FilterPredicate<IUser> = user => user.lastName === 'Potter';
 
     const results = mocklify<IUser>()
       .add(50, MOCK_USERS, whereNameIsPotter)
