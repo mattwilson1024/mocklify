@@ -115,19 +115,6 @@ export class MocklifyInstance<T> {
   private getRandomIntBetween(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
-
-
-
-  // public generate(count: number, factory: () => T): MocklifyDataSet<T> {
-  //   if(count <= this.allMocks.length) {
-  //     const mocks = produce(this.allMocks, draft => { draft.slice(0, count); });
-  //     return new MocklifyDataSet(mocks);
-  //   } else {
-  //     let generatedMocks = new Array(count - this.allMocks.length).fill(null)
-  //     generatedMocks = generatedMocks.map(() => factory());
-  //     return new MocklifyDataSet([...this.allMocks, ...generatedMocks]);
-  //   }
-  // }
 }
 
 export function mocklify<T>(): MocklifyInstance<T> {
