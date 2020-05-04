@@ -97,17 +97,26 @@ export class MocklifyInstance<T> {
     return this.data.filter(predicate);
   }
 
-  // getRandom(3)
-  // getWhere((user, index, allUsers) => ...)
+  public getRandom(count: number): T[] {
+    let results: T[] = [];
+    let availableItems = [...this.data];
+    for (let i = 0; i < count && availableItems.length > 0; i++) {
+      const randomIndex = this.getRandomIntBetween(0, availableItems.length - 1);
+      const [randomItem] = availableItems.splice(randomIndex, 1);
+      results.push(randomItem);
+    }
+    return results;
+  }
+
+  public getShuffled(): T[] {
+    return this.getRandom(this.data.length);
+  }
+
+  private getRandomIntBetween(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
 
 
-
-
-
-  // public getMany(filterPredicate?: FilterPredicate<T>): MocklifyDataSet<T> {
-  //   const filteredMocks = filterPredicate ? this.allMocks.filter(mock => filterPredicate(mock)) : this.allMocks;
-  //   return new MocklifyDataSet(filteredMocks);
-  // }
 
   // public generate(count: number, factory: () => T): MocklifyDataSet<T> {
   //   if(count <= this.allMocks.length) {

@@ -1,6 +1,6 @@
-import { IUser, MOCK_USERS } from "./test-data/test-data";
-import { FilterPredicate, mocklify } from "../main";
-import { modify, override } from "../operators";
+import { FilterPredicate, mocklify } from '../main';
+import { override } from '../operators';
+import { IUser, MOCK_USERS } from './test-data/test-data';
 
 describe('terminators', () => {
 
@@ -121,7 +121,7 @@ describe('terminators', () => {
       .addAll(MOCK_USERS)
       .getWhere(whereNameIsPotter);
 
-    expect(results.length).toEqual(6);
+    expect(results.length).toBe(6);
   });
 
   it('[getWhere] gets all the updated results that match the predicate', () => {
@@ -133,6 +133,44 @@ describe('terminators', () => {
       )
       .getWhere(whereNameIsHazzer);
 
-    expect(results.length).toEqual(1);
+    expect(results.length).toBe(1);
+  });
+
+  it('[getRandom] gets a random selection of results', () => {
+    const results: IUser[] = mocklify<IUser>()
+      .addAll(MOCK_USERS)
+      .getRandom(5);
+
+    expect(results.length).toBe(5);
+  });
+
+  it('[getRandom] gets a random selection of results, up to the length of the original array (shuffle the items)', () => {
+    const results: IUser[] = mocklify<IUser>()
+      .addAll(MOCK_USERS)
+      .getRandom(MOCK_USERS.length + 100);
+
+    expect(results.length).toBe(MOCK_USERS.length);
+  });
+
+  it('[getRandom] returns an empty array if you ask for less than one random items', () => {
+    const resultsZero: IUser[] = mocklify<IUser>()
+      .addAll(MOCK_USERS)
+      .getRandom(0);
+
+    const resultsNegative: IUser[] = mocklify<IUser>()
+      .addAll(MOCK_USERS)
+      .getRandom(-1);
+
+    expect(resultsZero).toEqual([]);
+    expect(resultsNegative).toEqual([]);
+  });
+
+  it('[getShuffled] returns the same items shuffled into a random order', () => {
+    const results: IUser[] = mocklify<IUser>()
+      .addAll(MOCK_USERS)
+      .getShuffled();
+
+    expect(results.length).toBe(MOCK_USERS.length);
+    expect(results).not.toEqual(MOCK_USERS);
   });
 });
