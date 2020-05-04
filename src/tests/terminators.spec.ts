@@ -1,5 +1,6 @@
 import { IUser, MOCK_USERS } from "./test-data/test-data";
-import { AddPredicate, mocklify } from "../main";
+import { FilterPredicate, mocklify } from "../main";
+import { modify, override } from "../operators";
 
 describe('terminators', () => {
 
@@ -12,7 +13,7 @@ describe('terminators', () => {
   });
 
   it('[getFirst] gets the first item of the updated results', () => {
-    const result: IUser = mocklify<IUser>()
+    const result: IUser | undefined = mocklify<IUser>()
       .addAll(MOCK_USERS)
       .getFirst();
 
@@ -20,7 +21,7 @@ describe('terminators', () => {
   });
 
   it('[getLast] gets the last item of the updated results', () => {
-    const result: IUser = mocklify<IUser>()
+    const result: IUser | undefined  = mocklify<IUser>()
       .addAll(MOCK_USERS)
       .getLast();
 
@@ -35,35 +36,103 @@ describe('terminators', () => {
 
     const firstTenUsers = MOCK_USERS.slice(0, 10);
     expect(results).toEqual(firstTenUsers);
+    expect(results.length).toBe(10);
   });
 
   it('[get] if the number is greater than the length of the results should return all it can but not pad or dupe', () => {
     const results: IUser[] = mocklify<IUser>()
       .addAll(MOCK_USERS)
-      .get(500);
+      .get(MOCK_USERS.length + 100);
 
-    const firstTenUsers = MOCK_USERS;
     expect(results).toEqual(MOCK_USERS);
   });
 
+  it('[get] if number is negative you get an empty array', () => {
+    const results: IUser[] = mocklify<IUser>()
+      .addAll(MOCK_USERS)
+      .get(-5);
+
+    expect(results).toEqual([]);
+  });
+
+  it('[get] if number is a float it is floored', () => {
+    const results: IUser[] = mocklify<IUser>()
+      .addAll(MOCK_USERS)
+      .get(5.2);
+    const results2: IUser[] = mocklify<IUser>()
+      .addAll(MOCK_USERS)
+      .get(5.9);
+
+    expect(results.length).toBe(5);
+    expect(results2.length).toBe(5);
+  });
+
+  it('[getSlice] you can get a slice of the results', () => {
+    const resultsFirstFive: IUser[] = mocklify<IUser>()
+      .addAll(MOCK_USERS)
+      .getSlice(0, 5);
+    const resultsSecondAndThird: IUser[] = mocklify<IUser>()
+      .addAll(MOCK_USERS)
+      .getSlice(1, 3);
+    const resultsLast: IUser[] = mocklify<IUser>()
+      .addAll(MOCK_USERS)
+      .getSlice(-1);
+    const resultsAllButFirstAndLast: IUser[] = mocklify<IUser>()
+      .addAll(MOCK_USERS)
+      .getSlice(1, -1);
+
+    expect(resultsFirstFive).toEqual(MOCK_USERS.slice(0, 5));
+    expect(resultsFirstFive.length).toBe(5);
+
+    expect(resultsSecondAndThird).toEqual(MOCK_USERS.slice(1, 3));
+    expect(resultsSecondAndThird.length).toBe(2);
+
+    expect(resultsLast).toEqual(MOCK_USERS.slice(-1));
+    expect(resultsLast.length).toBe(1);
+
+    expect(resultsAllButFirstAndLast).toEqual(MOCK_USERS.slice(1, -1));
+    expect(resultsAllButFirstAndLast.length).toBe(MOCK_USERS.length - 2);
+  });
+
   it('[getOne] return first item that matches the predicate', () => {
-    const whereNameIsPotter: AddPredicate<IUser> = user => user.lastName === 'Potter';
+    const whereNameIsPotter: FilterPredicate<IUser> = user => user.lastName === 'Potter';
 
     const result: IUser | undefined = mocklify<IUser>()
       .addAll(MOCK_USERS)
       .getOne(whereNameIsPotter);
 
     expect(result).not.toBeUndefined()
-    if (result) expect(result.firstName).toEqual('Harry');
+    expect(result?.firstName).toEqual('Harry');
   });
 
   it('[getOne] returns undefined if the predicate is not matched', () => {
-    const whereNameDoesNotExist: AddPredicate<IUser> = user => user.lastName === 'Non Existent Character';
+    const whereNameDoesNotExist: FilterPredicate<IUser> = user => user.lastName === 'Non Existent Character';
 
     const result: IUser | undefined = mocklify<IUser>()
       .addAll(MOCK_USERS)
       .getOne(whereNameDoesNotExist);
 
     expect(result).toBeUndefined()
+  });
+
+  it('[getWhere] gets all the updated results that match the predicate', () => {
+    const whereNameIsPotter: FilterPredicate<IUser> = user => user.lastName === 'Potter';
+    const results: IUser[] = mocklify<IUser>()
+      .addAll(MOCK_USERS)
+      .getWhere(whereNameIsPotter);
+
+    expect(results.length).toEqual(6);
+  });
+
+  it('[getWhere] gets all the updated results that match the predicate', () => {
+    const whereNameIsHazzer: FilterPredicate<IUser> = user => user.firstName === 'Hazzer';
+    const results: IUser[] = mocklify<IUser>()
+      .add(1, MOCK_USERS)
+      .mutate(
+        override({firstName: 'Hazzer'})
+      )
+      .getWhere(whereNameIsHazzer);
+
+    expect(results.length).toEqual(1);
   });
 });

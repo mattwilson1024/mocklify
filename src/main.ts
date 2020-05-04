@@ -70,18 +70,22 @@ export class MocklifyInstance<T> {
   }
 
   public get(count: number): T[] {
-    return this.data.slice(0, count);
+    return count > 0 ? this.data.slice(0, count) : [];
+  }
+
+  public getSlice(start: number, end?: number): T[] {
+    return this.data.slice(start, end);
   }
 
   public getAll(): T[] {
     return this.data;
   }
 
-  public getFirst(): T {
+  public getFirst(): T | undefined {
     return this.data[0];
   }
 
-  public getLast(): T {
+  public getLast(): T | undefined {
     const [lastItem] = this.data.slice(-1)
     return lastItem;
   }
@@ -90,8 +94,11 @@ export class MocklifyInstance<T> {
     return this.data.find(predicate);
   }
 
+  public getWhere(predicate: FilterPredicate<T>): T[] {
+    return this.data.filter(predicate);
+  }
+
   // getRandom(3)
-  // getWhere(predicate)
   // getWhere((user, index, allUsers) => ...)
 
 
