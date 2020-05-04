@@ -29,3 +29,13 @@ export const MOCK_USERS: IUser[] = [
     isOnline: false
   }
 ];
+
+export function UserFactory(): IUser {
+  return {
+    id: 'userX',
+    name: 'bill',
+    age: 22,
+    isAdmin: false,
+    isOnline: false
+  }
+}
