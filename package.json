@@ -1,8 +1,8 @@
 {
   "name": "mocklify",
   "version": "1.0.0",
-  "main": "dist/main.js",
-  "types": "dist/main.d.ts",
+  "main": "dist/public-api.js",
+  "types": "dist/public-api.d.ts",
   "license": "MIT",
   "scripts": {
     "build": "tsc",
