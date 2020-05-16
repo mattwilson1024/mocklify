@@ -4,6 +4,11 @@
   "main": "dist/public-api.js",
   "types": "dist/public-api.d.ts",
   "license": "MIT",
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
   "scripts": {
     "build": "tsc",
     "test": "jest",
@@ -13,8 +18,11 @@
     "@babel/core": "7.9.6",
     "@babel/preset-env": "7.9.6",
     "@babel/preset-typescript": "7.9.0",
+    "@commitlint/cli": "8.3.5",
+    "@commitlint/config-conventional": "8.3.4",
     "@types/jest": "25.2.2",
     "babel-jest": "26.0.1",
+    "husky": "4.2.5",
     "jest": "26.0.1",
     "typescript": "3.9.2"
   },
