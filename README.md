@@ -10,6 +10,19 @@
 
 > A powerful and flexible tool for managing mock data
 
+# Table of Contents
+
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Why Mocklify?](#why-mocklify)
+- [Pipeline Overview](#pipeline-overview)
+  - [Data Sources](#data-sources)
+  - [Filters](#filters)
+  - [Transformations](#transformations)
+  - [Terminators](#terminators)
+- [Transformation Operators](#transformation-operators)
+- [Transformation Scopes](#transformation-scopes)
+
 # Installation
 
 Using NPM:
