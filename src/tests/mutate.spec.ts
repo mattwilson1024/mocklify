@@ -7,7 +7,7 @@ import { IUser, MOCK_TAGS, MOCK_USERS } from './test-data/test-data';
 describe('mutate()', () => {
 
   it('[omit] should remove the specified properties from the results', () => {
-    const results: IUser[] = mocklify<IUser>()
+    const results = mocklify<IUser>()
       .add(2, MOCK_USERS)
       .mutate(
         omit(['isAdmin', 'isOnline'])
@@ -21,7 +21,7 @@ describe('mutate()', () => {
   });
 
   it('[omit] should have no effect if no properties are provided', () => {
-    const results: IUser[] = mocklify<IUser>()
+    const results = mocklify<IUser>()
       .addAll(MOCK_USERS)
       .mutate(
         omit([])
@@ -32,7 +32,7 @@ describe('mutate()', () => {
   });
 
   it('[override] allows overriding specific props of results', () => {
-    const results: IUser[] = mocklify<IUser>()
+    const results = mocklify<IUser>()
       .addAll(MOCK_USERS)
       .mutate(
         override({ points: 99 }),
@@ -43,7 +43,7 @@ describe('mutate()', () => {
   });
 
   it('[modify] allows immutable modification of results', () => {
-    const results: IUser[] = mocklify<IUser>()
+    const results = mocklify<IUser>()
       .add(2, MOCK_USERS)
       .mutate(
         modify((user, index) => {
@@ -60,7 +60,7 @@ describe('mutate()', () => {
   });
 
   it('[modify] modify callback provides the current item, its index and the full array of items', () => {
-    const results: IUser[] = mocklify<IUser>()
+    const results = mocklify<IUser>()
       .add(2, MOCK_USERS)
       .mutate(
         modify((user, index, allUsers) => {
@@ -76,7 +76,7 @@ describe('mutate()', () => {
   });
 
   it('[omit > modify > override] allows multiple operators to be applied as a chain', () => {
-    const results: IUser[] = mocklify<IUser>()
+    const results = mocklify<IUser>()
       .add(1, MOCK_USERS)
       .mutate(
         omit(['isOnline']),
@@ -100,7 +100,7 @@ describe('mutate()', () => {
   });
 
   it('[override > modify] applies operators in the correct order', () => {
-    const overrideThenModify: IUser[] = mocklify<IUser>()
+    const overrideThenModify = mocklify<IUser>()
       .add(1, MOCK_USERS)
       .mutate(
         override({ points: 20 }),
@@ -108,7 +108,7 @@ describe('mutate()', () => {
       )
       .getAll();
 
-    const modifyThenOverride: IUser[] = mocklify<IUser>()
+    const modifyThenOverride = mocklify<IUser>()
       .add(1, MOCK_USERS)
       .mutate(
         modify(user => user.points *= 10),
@@ -130,7 +130,7 @@ describe('mutate()', () => {
     const isSlytherin: Limiter<IUser> = user => user.tagIds.includes(MOCK_TAGS.slytherin.id);
     const isHarry: Limiter<IUser> = user => user.firstName === 'Harry' && user.lastName === 'Potter';
 
-    const results: IUser[] = mocklify<IUser>()
+    const results = mocklify<IUser>()
       .addAll(MOCK_USERS)
       .mutate(
         omit(['isOnline']),
