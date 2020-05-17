@@ -399,7 +399,7 @@ Returns a specific number of random items from the data set.
 
 ## getShuffled()
 
-> getShuffled(): T[]`
+> `getShuffled(): T[]`
 
 Returns all items fro
 
