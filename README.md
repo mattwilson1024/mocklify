@@ -165,9 +165,9 @@ it('should display a badge next to admin users', () => {
 });
 ```
 
-This avoids many of the problems identified above, but for less-trivial situations, the code may become complex and hard to interpret, especially if the changes are more complex or the properties being adjusted are deeply nested.
+This avoids many of the problems identified above, but in many situations, the code would have the potential to become hard to interpret, especially if the changes are non-trivial or involve nested data structures.
 
-Enter Mocklify. 
+**Enter Mocklify.**
 
 Mocklify provides a powerful, chained API which allows complex selection, filtering, transformation and projection - all in a way that reads like a sentence. 
 
@@ -231,7 +231,7 @@ Generally, this starts with one or more sources of data, applying optional filte
 
 ## Transformations
 
-- `mutate` - applies a chain of **transformation operators** to the data set. Transform operators apply to all items by default, but can be limited to a specific subset using `transformation scopes`.
+- `mutate` - applies a chain of [transformation operators](#transformation-operators) to the data set. Transform operators apply to all items by default, but can be limited to a specific subset using [transformation scopes](#transformation-scopes).
 
 ## Terminators
 
