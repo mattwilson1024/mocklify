@@ -5,7 +5,7 @@ import { IUser, MOCK_USERS } from './test-data/test-data';
 describe('terminators', () => {
 
   it('[getAll] gets all the updated results', () => {
-    const results: IUser[] = mocklify<IUser>()
+    const results = mocklify<IUser>()
       .addAll(MOCK_USERS)
       .getAll();
 
@@ -13,7 +13,7 @@ describe('terminators', () => {
   });
 
   it('[getFirst] gets the first item of the updated results', () => {
-    const result: IUser | undefined = mocklify<IUser>()
+    const result = mocklify<IUser>()
       .addAll(MOCK_USERS)
       .getFirst();
 
@@ -21,7 +21,7 @@ describe('terminators', () => {
   });
 
   it('[getLast] gets the last item of the updated results', () => {
-    const result: IUser | undefined  = mocklify<IUser>()
+    const result  = mocklify<IUser>()
       .addAll(MOCK_USERS)
       .getLast();
 
@@ -30,7 +30,7 @@ describe('terminators', () => {
   });
 
   it('[get] gets the first n results', () => {
-    const results: IUser[] = mocklify<IUser>()
+    const results = mocklify<IUser>()
       .addAll(MOCK_USERS)
       .get(10);
 
@@ -40,7 +40,7 @@ describe('terminators', () => {
   });
 
   it('[get] if the number is greater than the length of the results should return all it can but not pad or dupe', () => {
-    const results: IUser[] = mocklify<IUser>()
+    const results = mocklify<IUser>()
       .addAll(MOCK_USERS)
       .get(MOCK_USERS.length + 100);
 
@@ -48,7 +48,7 @@ describe('terminators', () => {
   });
 
   it('[get] if number is negative you get an empty array', () => {
-    const results: IUser[] = mocklify<IUser>()
+    const results = mocklify<IUser>()
       .addAll(MOCK_USERS)
       .get(-5);
 
@@ -56,10 +56,10 @@ describe('terminators', () => {
   });
 
   it('[get] if number is a float it is floored', () => {
-    const results: IUser[] = mocklify<IUser>()
+    const results = mocklify<IUser>()
       .addAll(MOCK_USERS)
       .get(5.2);
-    const results2: IUser[] = mocklify<IUser>()
+    const results2 = mocklify<IUser>()
       .addAll(MOCK_USERS)
       .get(5.9);
 
@@ -68,16 +68,16 @@ describe('terminators', () => {
   });
 
   it('[getSlice] you can get a slice of the results', () => {
-    const resultsFirstFive: IUser[] = mocklify<IUser>()
+    const resultsFirstFive = mocklify<IUser>()
       .addAll(MOCK_USERS)
       .getSlice(0, 5);
-    const resultsSecondAndThird: IUser[] = mocklify<IUser>()
+    const resultsSecondAndThird = mocklify<IUser>()
       .addAll(MOCK_USERS)
       .getSlice(1, 3);
-    const resultsLast: IUser[] = mocklify<IUser>()
+    const resultsLast = mocklify<IUser>()
       .addAll(MOCK_USERS)
       .getSlice(-1);
-    const resultsAllButFirstAndLast: IUser[] = mocklify<IUser>()
+    const resultsAllButFirstAndLast = mocklify<IUser>()
       .addAll(MOCK_USERS)
       .getSlice(1, -1);
 
@@ -97,7 +97,7 @@ describe('terminators', () => {
   it('[getOne] return first item that matches the predicate', () => {
     const whereNameIsPotter: FilterPredicate<IUser> = user => user.lastName === 'Potter';
 
-    const result: IUser | undefined = mocklify<IUser>()
+    const result = mocklify<IUser>()
       .addAll(MOCK_USERS)
       .getOne(whereNameIsPotter);
 
@@ -108,7 +108,7 @@ describe('terminators', () => {
   it('[getOne] returns undefined if the predicate is not matched', () => {
     const whereNameDoesNotExist: FilterPredicate<IUser> = user => user.lastName === 'Non Existent Character';
 
-    const result: IUser | undefined = mocklify<IUser>()
+    const result = mocklify<IUser>()
       .addAll(MOCK_USERS)
       .getOne(whereNameDoesNotExist);
 
@@ -117,7 +117,7 @@ describe('terminators', () => {
 
   it('[getWhere] gets all the updated results that match the predicate', () => {
     const whereNameIsPotter: FilterPredicate<IUser> = user => user.lastName === 'Potter';
-    const results: IUser[] = mocklify<IUser>()
+    const results = mocklify<IUser>()
       .addAll(MOCK_USERS)
       .getWhere(whereNameIsPotter);
 
@@ -126,7 +126,7 @@ describe('terminators', () => {
 
   it('[getWhere] gets all the updated results that match the predicate', () => {
     const whereNameIsHazzer: FilterPredicate<IUser> = user => user.firstName === 'Hazzer';
-    const results: IUser[] = mocklify<IUser>()
+    const results = mocklify<IUser>()
       .add(1, MOCK_USERS)
       .mutate(
         override({firstName: 'Hazzer'})
@@ -137,7 +137,7 @@ describe('terminators', () => {
   });
 
   it('[getRandom] gets a random selection of results', () => {
-    const results: IUser[] = mocklify<IUser>()
+    const results = mocklify<IUser>()
       .addAll(MOCK_USERS)
       .getRandom(5);
 
@@ -145,7 +145,7 @@ describe('terminators', () => {
   });
 
   it('[getRandom] gets a random selection of results, up to the length of the original array (shuffle the items)', () => {
-    const results: IUser[] = mocklify<IUser>()
+    const results = mocklify<IUser>()
       .addAll(MOCK_USERS)
       .getRandom(MOCK_USERS.length + 100);
 
@@ -153,11 +153,11 @@ describe('terminators', () => {
   });
 
   it('[getRandom] returns an empty array if you ask for less than one random items', () => {
-    const resultsZero: IUser[] = mocklify<IUser>()
+    const resultsZero = mocklify<IUser>()
       .addAll(MOCK_USERS)
       .getRandom(0);
 
-    const resultsNegative: IUser[] = mocklify<IUser>()
+    const resultsNegative = mocklify<IUser>()
       .addAll(MOCK_USERS)
       .getRandom(-1);
 
@@ -166,7 +166,7 @@ describe('terminators', () => {
   });
 
   it('[getShuffled] returns the same items shuffled into a random order', () => {
-    const results: IUser[] = mocklify<IUser>()
+    const results = mocklify<IUser>()
       .addAll(MOCK_USERS)
       .getShuffled();
 

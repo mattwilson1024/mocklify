@@ -6,7 +6,7 @@ describe('filter()', () => {
   it('filters items to those that match predicate', () => {
     const whereNameIsPotter: FilterPredicate<IUser> = user => user.lastName === 'Potter';
 
-    const results: IUser[] = mocklify<IUser>()
+    const results = mocklify<IUser>()
       .addAll(MOCK_USERS)
       .filter(whereNameIsPotter)
       .getAll();
@@ -14,11 +14,11 @@ describe('filter()', () => {
     expect(results.length).toBe(6);
   });
 
-  it('filters items to those that match predicate', () => {
+  it('supports filtering at the point of adding data, as well as after', () => {
     const whereLastNameIsPotter: FilterPredicate<IUser> = user => user.lastName === 'Potter';
     const whereFirstNameIsHarry: FilterPredicate<IUser> = user => user.firstName === 'Harry';
 
-    const results: IUser[] = mocklify<IUser>()
+    const results = mocklify<IUser>()
       .addAll(MOCK_USERS, whereLastNameIsPotter)
       .filter(whereFirstNameIsHarry)
       .getAll();
@@ -27,18 +27,3 @@ describe('filter()', () => {
   });
 
 });
-
-
-// TODO
-/*
-
-bob, john, fred, harry, frank, harry
-
-add(5, user => harry)   /// harry1, harry2, harry1, harry2, harry1
-filter(harry) // harry1, harry2, harry1, harry2, harry1
-
-
-add(5) // bob, john, fred, harry, frank
-filter(user => harry) // harry1
-
-*/
