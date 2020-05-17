@@ -102,31 +102,40 @@ The motivation behind the Mocklify library is explored in more depth in the ["Wh
 
 # Pipeline Overview
 
-Mocklify's API allows you to define a pipeline made up of chainable steps.
+To use Mocklify you define a pipeline of steps, each of which adds, removes or transforms data in some way.
 
-Generally, this starts with one or more sources of data, applying optional filtering and transformation, and finally returns data.
+At the end of the chain, you call a "terminator" function which returns the data.
+
+Generally, the first step(s) will accumulate data from one or more sources (objects from a predefined set of mock data, newly generated mock objects, or any combination). After this, optional filtering and transformation steps can be used to manipulate the data to your needs, before it is then returned by one of the terminator functions.
+
+The following diagram shows an example Mocklify pipeline: 
 
 ```
-┌──────────────┐              ┌──────────────┐
-│  Predefined  │  - and/or -  │Generated Mock│
-│ Mock Objects │              │   Objects    │
-└──────────────┘              └──────────────┘
-        │                             │       
-        └──────────────┬──────────────┘       
-                       ▼                      
-               ┌───────────────┐              
-               │    Filters    │              
-               └───────────────┘              
-                       │                      
-                       ▼                      
-               ┌───────────────┐              
-               │Transformations│              
-               └───────────────┘              
-                       │                      
-                       ▼                      
-               ┌───────────────┐              
-               │  Terminator   │              
-               └───────────────┘              
+                                 const results = mocklify<IUser>()                
+┌─────────────────────┐                                                           
+│    Data Sources     │◀ ─ ─ ─ ─ ─ .add(20, MOCK_USERS)                           
+└─────────────────────┘            .generate(10, greatWizards)                    
+           │                                                                      
+           ▼                                                                      
+┌─────────────────────┐                                                           
+│       Filters       │◀ ─ ─ ─ ─ ─ .filter(isDeathEater)                          
+└─────────────────────┘                                                           
+           │                                                                      
+           ▼                                                                      
+┌─────────────────────┐                                                           
+│   Transformations   │◀ ─ ─ ─ ─ ─ .mutate(                                       
+└─────────────────────┘              omit(['isOnline']),                          
+           │                         where(isGryffindor, [                        
+           │                           modify(user => user.points += 1000)        
+           │                         ]),                                          
+           │                         where(isSlytherin, [                         
+           │                           override({ points: 0 })                    
+           │                         ]),                                          
+           ▼                       )                                              
+┌─────────────────────┐                                                           
+│     Terminator      │◀ ─ ─ ─ ─ ─ .getAll();                                     
+└─────────────────────┘                                                           
+                                                                                  
 ```
 
 Data Sources
@@ -152,8 +161,8 @@ Terminators
 - `getLast` - returns the last item in the data set
 - `getOne` - returns a single item from the data set that matches a predicate (if multiple items match, the first is returned)
 - `getWhere` - returns any items from the data set which match a predicate
-- `getRandom` - returns _n_ random items from the data set
-- `getShuffled` - returns a specific number of items from the data set, shuffled into a random order
+- `getRandom` - returns a specific number of random items from the data set
+- `getShuffled` - returns all items from the data set, shuffled into a random order
 
 # Data Sources
 
@@ -322,14 +331,14 @@ const results = mocklify<IUser>()
   .mutate(
     omit(['isOnline']),
     where(isGryffindor, [
-      override({ points: 1000 })
+      modify(user => user.points += 1000)
     ]),
     where(isSlytherin, [
-      modify(user => user.points = 0)
+      override({ points: 0 })
     ]),
     where(isHarry, [
       override({
-        points: 9000,
+        points: 9999,
         isAdmin: true
       })
     ])
@@ -339,9 +348,9 @@ const results = mocklify<IUser>()
 
 The above example:
 - omits the `isOnline` property for _all users_
-- gives everyone in Gryffindor 1000 points
+- gives everyone in Gryffindor an additional 1000 points
 - removes all points from everyone in Slytherin
-- gives Harry 9000 points and sets him as an admin
+- set's Harry's points to 9999 and makes him an admin
 
 # Terminators
 
@@ -365,7 +374,9 @@ Returns the specified number of items from the data set.
 
 > `getSlice(start: number, end?: number): T[]`
 
-Returns a subset of items in the data set.
+Returns a subset of items in the data set. 
+
+As per `Array.prototype.slice`, the `end` parameter is optional and negative values are supported, acting as an offset from the end of the array.
 
 ## getFirst()
 
@@ -401,7 +412,7 @@ Returns a specific number of random items from the data set.
 
 > `getShuffled(): T[]`
 
-Returns all items fro
+Returns all items from the data set, shuffled into a random order
 
 # Contributors ✨
 
