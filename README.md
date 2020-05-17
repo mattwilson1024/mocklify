@@ -26,9 +26,18 @@
   - [omit()](#omit)
   - [override()](#override)
   - [modify()](#modify)
-<!-- - [Terminators](#terminators) -->
 - [Transformation Scopes](#transformation-scopes)
   - [where()](#where)
+- [Terminators](#terminators)
+  - [getAll()](#getAll)
+  - [get()](#get)
+  - [getSlice()](#getSlice)
+  - [getFirst()](#getFirst)
+  - [getLast()](#getLast)
+  - [getOne()](#getOne)
+  - [getWhere()](#getWhere)
+  - [getRandom()](#getRandom)
+  - [getShuffled()](#getShuffled)
 - [Contributors](#contributors-✨)
 
 # Installation
@@ -251,7 +260,7 @@ Terminators
 - `getOne` - returns a single item from the data set that matches a predicate (if multiple items match, the first is returned)
 - `getWhere` - returns any items from the data set which match a predicate
 - `getRandom` - returns _n_ random items from the data set
-- `getShuffled` - returns all items from the data set, shuffled into a random order
+- `getShuffled` - returns a specific number of items from the data set, shuffled into a random order
 
 # Data Sources
 
@@ -328,11 +337,11 @@ const results = mocklify<IUser>()
 
 # Transformation Operators
 
-The `mutate` pipeline step is the heart of Mocklify. This takes a _chain_ of transformation operators which modify the data in some way.
+Transformation operators are the heart of Mocklify. They are composable, chainable methods which transform data items in some way.
+
+To use them, pass one or more operators into the `mutate` pipeline step.
 
 Mocklify's transformation operators will _automatically_ be immutable (they will never mutate the original input sources). Internally, Mocklify uses [Immer](https://github.com/immerjs/immer) to get immutable state.
-
-The available operators are:
 
 ## omit()
 
@@ -441,6 +450,65 @@ The above example:
 - removes all points from everyone in Slytherin
 - gives Harry 9000 points and sets him as an admin
 
+# Terminators
+
+Terminator methods are the final step in a Mocklify chain, used to access the fruit of your labour.
+
+Terminator methods return the current data set, or some subset of that data set, ready for consumption by your app or tests.
+
+## getAll()
+
+> `getAll(): T[]`
+
+Returns all items in the data set.
+
+## get()
+
+> `get(count: number): T[]`
+
+Returns the specified number of items from the data set.
+
+## getSlice()
+
+> `getSlice(start: number, end?: number): T[]`
+
+Returns a subset of items in the data set.
+
+## getFirst()
+
+> `getFirst(): T | undefined`
+
+Returns the first item in the data set.
+
+## getLast()
+
+> `getLast(): T | undefined`
+
+Returns the last item in the data set.
+
+## getOne()
+
+> `getOne(predicate: FilterPredicate<T>): T | undefined`
+
+Returns a single item from the data set that matches a predicate (if multiple items match, the first is returned).
+
+## getWhere()
+
+> `getWhere(predicate: FilterPredicate<T>): T[]`
+
+Returns any items from the data set which match a predicate.
+
+## getRandom()
+
+> `getRandom(count: number): T[]`
+
+Returns a specific number of random items from the data set.
+
+## getShuffled()
+
+> getShuffled(): T[]`
+
+Returns all items fro
 
 # Contributors ✨
 
