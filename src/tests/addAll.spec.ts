@@ -6,7 +6,7 @@ describe('addAll()', () => {
   it('adds all matching items', () => {
     const whereNameIsPotter: FilterPredicate<IUser> = user => user.lastName === 'Potter';
 
-    const results: IUser[] = mocklify<IUser>()
+    const results = mocklify<IUser>()
       .addAll(MOCK_USERS, whereNameIsPotter)
       .getAll();
 
@@ -14,7 +14,7 @@ describe('addAll()', () => {
   });
 
   it('adds all items if no predicate is provided', () => {
-    const results: IUser[] = mocklify<IUser>()
+    const results = mocklify<IUser>()
       .addAll(MOCK_USERS)
       .getAll();
 
