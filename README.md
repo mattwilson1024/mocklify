@@ -195,11 +195,11 @@ The optional `predicate` parameter limits which items are included.
 
 > `generate(count: number, factory: MockFactory<T>)`
 
-The `generate` method generates a specific number of new objects using the provided factory function.
+The `generate` method generates a specific number of new objects using the provided factory function. This is useful if you need mock objects that are not based on a predefined set of examples.
 
-This is useful for procedurally generating sample data if it does not need to be realistic.
-
-A mock factory is a function which, given the index, returns a new object.
+The function takes two parameters:
+- The number of items to generate
+- A factory function which, given the index, returns a new mock object.
 
 ```typescript
 export const MOCK_USER_FACTORY = (index: number): IUser => {
@@ -207,6 +207,29 @@ export const MOCK_USER_FACTORY = (index: number): IUser => {
     id: `user_${index}`,
     firstName: 'FirstName',
     lastName: 'LastName',
+    ...
+  };
+};
+
+const twentyGeneratedUsers = mocklify<IUser>()
+  .generate(20, MOCK_USER_FACTORY)
+  .getAll();
+```
+
+The above example will generate 20 users with incrementing IDs, but they will all have the same static `firstName` and `lastName` properties. 
+
+For more sophisticated data generation, it is easy to combine Mocklify with other libraries such as [Faker.js](https://github.com/marak/Faker.js/), like so:
+
+```typescript
+import { mocklify } from 'mocklify';
+import { lorem, name, random } from 'faker';
+
+export const MOCK_USER_FACTORY = (index: number): IUser => {
+  return {
+    id: random.uuid(),
+    firstName: name.firstName(),
+    lastName: name.lastName(),
+    note: lorem.paragraph()
     ...
   };
 };
