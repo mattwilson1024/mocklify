@@ -16,12 +16,20 @@
 - [Quick Start](#quick-start)
 - [Why Mocklify?](#why-mocklify)
 - [Pipeline Overview](#pipeline-overview)
-  - [Data Sources](#data-sources)
-  - [Filters](#filters)
-  - [Transformations](#transformations)
-  - [Terminators](#terminators)
+- [Data Sources](#data-sources)
+  - [add()](#add)
+  - [addAll()](#addAll)
+  - [generate()](#generate)
+- [Filters](#filters)
+  - [filter()](#filter)
 - [Transformation Operators](#transformation-operators)
+  - [omit()](#omit)
+  - [override()](#override)
+  - [modify()](#modify)
+<!-- - [Terminators](#terminators) -->
 - [Transformation Scopes](#transformation-scopes)
+  - [where()](#where)
+- [Contributors](#contributors-✨)
 
 # Installation
 
@@ -219,21 +227,21 @@ Generally, this starts with one or more sources of data, applying optional filte
                └───────────────┘              
 ```
 
-## Data sources
+Data Sources
 
 - `add` - adds a specified number of **predefined mock objects** to the data set
 - `addAll` - adds all provided **predefined mock objects** to the data set
 - `generate` - generates a specific number of new objects using a factory function, and adds them to the data set
 
-## Filters
+Filters
 
 - `filter` - removes any items from the data set which don't match the provided predicate
 
-## Transformations
+Transformations
 
 - `mutate` - applies a chain of [transformation operators](#transformation-operators) to the data set. Transform operators apply to all items by default, but can be limited to a specific subset using [transformation scopes](#transformation-scopes).
 
-## Terminators
+Terminators
 
 - `getAll` - returns all items in the data set
 - `get` - returns the specified number of items from the data set
@@ -245,6 +253,79 @@ Generally, this starts with one or more sources of data, applying optional filte
 - `getRandom` - returns _n_ random items from the data set
 - `getShuffled` - returns all items from the data set, shuffled into a random order
 
+# Data Sources
+
+The core state of the Mocklify pipeline is an in-memory set of mock data, in the form of a strongly typed array. Because each use-case is likely to need a different set of data, Mocklify is flexible about how this data set is constructed.
+
+At any point in the pipeline (typically the start), items can be _added_ to current data set using any combination of:
+
+- predefined mock objects (using the `add` or `addAll` functions)
+- generated mock objects (using the `generate` function)
+
+## add()
+
+> `add(targetLength: number, items: T[], predicate?: FilterPredicate<T>)`
+
+The `add` method pushes a specific number of items from a source set of predefined mock objects into the current data set. 
+
+The `targetLength` parameter defines exactly how many items should be added. If the source array contains more items than requested, Mocklify takes the first `n` items. If it contains less items than requested, then it will repeat items as many times are needed to reach the target length.
+
+The optional `predicate` parameter allows more control over which items from the source set are added. Only items that match the predicate will be used.
+
+## addAll()
+
+> `addAll(items: T[], predicate?: FilterPredicate<T>)`
+
+The `addAll` method pushes all items from a source set of predefined mock objects into the current data set. This is similar to `add()` but is not constrained to a specific length.
+
+The optional `predicate` parameter limits which items are included.
+
+## generate()
+
+> `generate(count: number, factory: MockFactory<T>)`
+
+The `generate` method generates a specific number of new objects using the provided factory function.
+
+This is useful for procedurally generating sample data if it does not need to be realistic.
+
+A mock factory is a function which, given the index, returns a new object.
+
+```typescript
+export const MOCK_USER_FACTORY = (index: number): IUser => {
+  return {
+    id: `user_${index}`,
+    firstName: 'FirstName',
+    lastName: 'LastName',
+    ...
+  };
+};
+
+const twentyGeneratedUsers = mocklify<IUser>()
+  .generate(20, MOCK_USER_FACTORY)
+  .getAll();
+```
+
+# Filters
+
+After adding data from one or more [data sources](data-sources), filters allow the current data set to be reduced if required.
+
+Note: These filters apply to the pipeline's entire internal data set (i.e. after combining data from one or more data sources). In many cases, it may be better to avoid adding certain items in the first place - this can be achieved by passing a predicate to the data source methods at the point of adding data.
+
+## filter()
+
+> filter(predicate: FilterPredicate<T>)
+
+Filters the current data set to only include items that fulfil the specified criteria.
+
+```typescript
+const whereNameIsPotter: FilterPredicate<IUser> = user => user.lastName === 'Potter';
+
+const results = mocklify<IUser>()
+  .addAll(MOCK_USERS)
+  .filter(whereNameIsPotter)
+  .getAll();
+```
+
 # Transformation Operators
 
 The `mutate` pipeline step is the heart of Mocklify. This takes a _chain_ of transformation operators which modify the data in some way.
@@ -253,7 +334,11 @@ Mocklify's transformation operators will _automatically_ be immutable (they will
 
 The available operators are:
 
-- `omit` - removes specific properties from the data
+## omit()
+
+> `omit<T>(propsToOmit: Array<keyof T>)`
+
+Removes one or more specific properties from the data
 
 ```typescript
 const results = mocklify<IUser>()
@@ -264,7 +349,11 @@ const results = mocklify<IUser>()
   .getAll();
 ```
 
-- `override` - takes an object containing a set of properties which should be overriden with a new value
+## override()
+
+> `override<T, P extends Partial<T>>(propsToOverride: P)`
+
+Overrides specific properties with new values, spreading them on top of the original object
 
 ```typescript
 const results = mocklify<IUser>()
@@ -275,7 +364,15 @@ const results = mocklify<IUser>()
   .getAll();
 ```
 
-- `modify` - takes a function which can modify the object in any way, for full control. 
+## modify()
+
+> `modify<T>(modifierFunction: ModifierFunction<T>)`
+
+Takes a callback function which gives full control over modifying the object in any way. 
+
+The provided function is given the item, its index and the full array of items. This can be very helpful for updating values based on the existing data or the index.
+
+Mocklify takes care of applying the changes in an immutable way.
 
 ```typescript
 const results = mocklify<IUser>()
@@ -290,15 +387,26 @@ const results = mocklify<IUser>()
   .getAll();
 ```
 
-The `modify` operator is a real powerhouse and could, in theory, negate the need for the other operators. For example, `modify` can achieve everything that `override` does and more. However, we believe that the other operators bring increased readability for simple use cases.
-
-In addition to the item itself, the `modify` callback also provides the index and full array of items. This can be very helpful for updating values based on the index, or applying changes conditionally.
+Note: The `modify` operator is a powerhouse and could, in theory, negate the need for the other operators. For example, `modify` can achieve everything that `override` does and more. However, we believe that the other operators bring increased readability for simple use cases.
 
 # Transformation Scopes
 
 By default, transformations apply to _all_ items in the data set.
 
-Sometimes, it may be useful to apply transformations only to certain items in the data set. This is possible by wrapping `transformation operators` in a `scope`, like so:
+Sometimes, it may be useful to apply transformations only to certain items in the data set. This is possible by wrapping `transformation operators` in a `scope`.
+
+## where()
+
+> `where<T>(limiter: Limiter<T>, operators: Operator<T>[])`
+
+The `where` scope applies the specified chain of `transformation operators` only to those items that fulfil the criteria defined by the `limiter`.
+
+This unlocks a lot of power. For inspriation, here are some examples of how we might use scopes and operators for a list of users:
+- "Promote all users in a particular group to be admins"
+- "Omit the `lastName` property for a random subset of users"
+- "Set `isOnline` to true for the first 10 users, and false for the rest"
+
+Example:
 
 ```typescript
 import { mocklify, modify, omit, override, where } from 'mocklify';
@@ -332,15 +440,6 @@ The above example:
 - gives everyone in Gryffindor 1000 points
 - removes all points from everyone in Slytherin
 - gives Harry 9000 points and sets him as an admin
-
-The `where` scope takes two parameters:
-1. A `scope limiter` function which specifies whether or not each item should be affected by the transformations
-2. A `chain of transformation operators` to be applied to those items that meet the limiter's condition
-
-This unlocks a lot of power. For inspriation, here are some examples of how we might use scopes and operators for a list of users:
-- "Promote all users in a particular group to be admins"
-- "Omit the `lastName` property for a random subset of users"
-- "Set `isOnline` to true for the first 10 users, and false for the rest"
 
 
 # Contributors ✨
