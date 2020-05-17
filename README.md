@@ -138,21 +138,21 @@ The following diagram shows an example Mocklify pipeline:
                                                                                   
 ```
 
-Data Sources
+Data Sources [[learn more](#data-sources)]
 
-- `add` - adds a specified number of **predefined mock objects** to the data set
-- `addAll` - adds all provided **predefined mock objects** to the data set
+- `add` - adds a specified number of predefined mock objects to the data set
+- `addAll` - adds all provided predefined mock objects to the data set
 - `generate` - generates a specific number of new objects using a factory function, and adds them to the data set
 
-Filters
+Filters [[learn more](#filters)]
 
 - `filter` - removes any items from the data set which don't match the provided predicate
 
-Transformations
+Transformations [[learn more](#transformation-operators)]
 
 - `mutate` - applies a chain of [transformation operators](#transformation-operators) to the data set. Transform operators apply to all items by default, but can be limited to a specific subset using [transformation scopes](#transformation-scopes).
 
-Terminators
+Terminators [[learn more](#terminators)]
 
 - `getAll` - returns all items in the data set
 - `get` - returns the specified number of items from the data set
