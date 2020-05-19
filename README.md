@@ -229,7 +229,7 @@ export const MOCK_USER_FACTORY = (index: number): IUser => {
     id: random.uuid(),
     firstName: name.firstName(),
     lastName: name.lastName(),
-    note: lorem.paragraph()
+    note: lorem.paragraph(),
     ...
   };
 };
@@ -335,15 +335,17 @@ Sometimes, it may be useful to apply transformations only to certain items in th
 
 The `where` scope applies the specified chain of `transformation operators` only to those items that fulfil the criteria defined by the `limiter`.
 
-This unlocks a lot of power. For inspriation, here are some examples of how we might use scopes and operators for a list of users:
+This unlocks a lot of power. For inspiration, here are some examples of how we might use scopes and operators for a list of users:
 - "Promote all users in a particular group to be admins"
 - "Omit the `lastName` property for a random subset of users"
 - "Set `isOnline` to true for the first 10 users, and false for the rest"
 
+Let's try an example, say I'm not interested in the users online status, I want to bump the house points of Gryffindors, nuke the points for Slytherins, max out Harry's Points and make him and admin for good measure.
+
 Example:
 
 ```typescript
-import { mocklify, modify, omit, override, where } from 'mocklify';
+import { mocklify, modify, omit, override, where, Limiter } from 'mocklify';
 
 const isGryffindor: Limiter<IUser> = user => user.tagIds.includes(MOCK_TAGS.gryffindor.id);
 const isSlytherin: Limiter<IUser> = user => user.tagIds.includes(MOCK_TAGS.slytherin.id);
