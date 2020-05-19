@@ -340,9 +340,9 @@ This unlocks a lot of power. For inspiration, here are some examples of how we m
 - "Omit the `lastName` property for a random subset of users"
 - "Set `isOnline` to true for the first 10 users, and false for the rest"
 
-Let's try an example, say I'm not interested in the users online status, I want to bump the house points of Gryffindors, nuke the points for Slytherins, max out Harry's Points and make him and admin for good measure.
+Let's try an example, say I'm not interested in the users' online status, I want to bump the house points of Gryffindors, nuke the points for Slytherins, max out Harry's points and make him and admin for good measure.
 
-Example:
+This could achieved as follows:
 
 ```typescript
 import { mocklify, modify, omit, override, where, Limiter } from 'mocklify';
@@ -370,12 +370,6 @@ const results = mocklify<IUser>()
   )
   .getAll();
 ```
-
-The above example:
-- omits the `isOnline` property for _all users_
-- gives everyone in Gryffindor an additional 1000 points
-- removes all points from everyone in Slytherin
-- set's Harry's points to 9999 and makes him an admin
 
 # Terminators
 
