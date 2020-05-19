@@ -63,7 +63,7 @@ export class MocklifyInstance<T> {
     return this;
   }
 
-  public mutate(...operators: Array<Scope<T>|Operator<T>>): MocklifyInstance<T> {
+  public transform(...operators: Array<Scope<T>|Operator<T>>): MocklifyInstance<T> {
     this.data = applyOperators(this.data, operators, DEFAULT_LIMITER);
     return this;
   }

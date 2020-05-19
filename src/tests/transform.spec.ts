@@ -4,12 +4,12 @@ import { modify, omit, override } from '../operators';
 import { where } from '../scopes';
 import { IUser, MOCK_TAGS, MOCK_USERS } from './test-data/test-data';
 
-describe('mutate()', () => {
+describe('transform()', () => {
 
   it('[omit] should remove the specified properties from the results', () => {
     const results = mocklify<IUser>()
       .add(2, MOCK_USERS)
-      .mutate(
+      .transform(
         omit(['isAdmin', 'isOnline'])
       )
       .getAll();
@@ -23,7 +23,7 @@ describe('mutate()', () => {
   it('[omit] should have no effect if no properties are provided', () => {
     const results = mocklify<IUser>()
       .addAll(MOCK_USERS)
-      .mutate(
+      .transform(
         omit([])
       )
       .getAll();
@@ -34,7 +34,7 @@ describe('mutate()', () => {
   it('[override] allows overriding specific props of results', () => {
     const results = mocklify<IUser>()
       .addAll(MOCK_USERS)
-      .mutate(
+      .transform(
         override({ points: 99 }),
       )
       .getAll();
@@ -45,7 +45,7 @@ describe('mutate()', () => {
   it('[modify] allows immutable modification of results', () => {
     const results = mocklify<IUser>()
       .add(2, MOCK_USERS)
-      .mutate(
+      .transform(
         modify((user, index) => {
           user.id = `user_${index}`;
           user.points *= 2;
@@ -62,7 +62,7 @@ describe('mutate()', () => {
   it('[modify] modify callback provides the current item, its index and the full array of items', () => {
     const results = mocklify<IUser>()
       .add(2, MOCK_USERS)
-      .mutate(
+      .transform(
         modify((user, index, allUsers) => {
           user.firstName = `${user.firstName} (user ${index + 1} of ${allUsers.length})`;
         })
@@ -78,7 +78,7 @@ describe('mutate()', () => {
   it('[omit > modify > override] allows multiple operators to be applied as a chain', () => {
     const results = mocklify<IUser>()
       .add(1, MOCK_USERS)
-      .mutate(
+      .transform(
         omit(['isOnline']),
         modify((user, index) => {
           user.id = `user_${index}`;
@@ -102,7 +102,7 @@ describe('mutate()', () => {
   it('[override > modify] applies operators in the correct order', () => {
     const overrideThenModify = mocklify<IUser>()
       .add(1, MOCK_USERS)
-      .mutate(
+      .transform(
         override({ points: 20 }),
         modify(user => user.points *= 10)
       )
@@ -110,7 +110,7 @@ describe('mutate()', () => {
 
     const modifyThenOverride = mocklify<IUser>()
       .add(1, MOCK_USERS)
-      .mutate(
+      .transform(
         modify(user => user.points *= 10),
         override({ points: 20 }),
       )
@@ -132,7 +132,7 @@ describe('mutate()', () => {
 
     const results = mocklify<IUser>()
       .addAll(MOCK_USERS)
-      .mutate(
+      .transform(
         omit(['isOnline']),
         where(isGryffindor, [
           override({ points: 1000 })
