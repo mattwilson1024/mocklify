@@ -6,6 +6,8 @@ export type FilterPredicate<T> = (item: T, index: number, allItems: T[]) => bool
 
 export type MockFactory<T> = (index: number) => T;
 
+export type ArrayOrRestParameters<T> = T[] | T[][];
+
 export class MocklifyInstance<T> {
   private data: T[] = [];
 
@@ -63,8 +65,8 @@ export class MocklifyInstance<T> {
     return this;
   }
 
-  public transform(...operators: Array<Scope<T>|Operator<T>>): MocklifyInstance<T> {
-    this.data = applyOperators(this.data, operators, DEFAULT_LIMITER);
+  public transform(...operators: ArrayOrRestParameters<Scope<T>|Operator<T>>): MocklifyInstance<T> {
+    this.data = applyOperators(this.data, operators.flat(), DEFAULT_LIMITER);
     return this;
   }
 
