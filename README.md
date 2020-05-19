@@ -86,7 +86,7 @@ import { mocklify, override } from 'mocklify';
 
 const mockData = mocklify<IUser>()
   .add(10, MOCK_USERS)
-  .mutate(
+  .transform(
     override({ isAdmin: true }),
   )
   .getAll();
@@ -123,7 +123,7 @@ The following diagram shows an example Mocklify pipeline:
            │                                                                      
            ▼                                                                      
 ┌─────────────────────┐                                                           
-│   Transformations   │◀ ─ ─ ─ ─ ─ .mutate(                                       
+│   Transformations   │◀ ─ ─ ─ ─ ─ .transform(                                       
 └─────────────────────┘              omit(['isOnline']),                          
            │                         where(isGryffindor, [                        
            │                           modify(user => user.points += 1000)        
@@ -150,7 +150,7 @@ Filters [[learn more](#filters)]
 
 Transformations [[learn more](#transformation-operators)]
 
-- `mutate` - applies a chain of [transformation operators](#transformation-operators) to the data set. Transform operators apply to all items by default, but can be limited to a specific subset using [transformation scopes](#transformation-scopes).
+- `transform` - applies a chain of [transformation operators](#transformation-operators) to the data set. Transform operators apply to all items by default, but can be limited to a specific subset using [transformation scopes](#transformation-scopes).
 
 Terminators [[learn more](#terminators)]
 
@@ -264,7 +264,7 @@ const results = mocklify<IUser>()
 
 Transformation operators are the heart of Mocklify. They are composable, chainable methods which transform data items in some way.
 
-To use them, pass one or more operators into the `mutate` pipeline step.
+To use them, pass one or more operators into the `transform` pipeline step.
 
 Mocklify's transformation operators will _automatically_ be immutable (they will never mutate the original input sources). Internally, Mocklify uses [Immer](https://github.com/immerjs/immer) to get immutable state.
 
@@ -277,7 +277,7 @@ Removes one or more specific properties from the data
 ```typescript
 const results = mocklify<IUser>()
   .addAll(MOCK_USERS)
-  .mutate(
+  .transform(
     omit(['isAdmin'])
   )
   .getAll();
@@ -292,7 +292,7 @@ Overrides specific properties with new values, spreading them on top of the orig
 ```typescript
 const results = mocklify<IUser>()
   .addAll(MOCK_USERS)
-  .mutate(
+  .transform(
     override({ isAdmin: true }),
   )
   .getAll();
@@ -311,7 +311,7 @@ Mocklify takes care of applying the changes in an immutable way.
 ```typescript
 const results = mocklify<IUser>()
   .addAll(MOCK_USERS)
-  .mutate(
+  .transform(
     modify((user, index, allUsers) => {
       user.id = `user_${index}`;
       user.firstName = `${user.firstName} (user ${index + 1} of ${allUsers.length})`;
@@ -353,7 +353,7 @@ const isHarry: Limiter<IUser> = user => user.firstName === 'Harry' && user.lastN
 
 const results = mocklify<IUser>()
   .addAll(MOCK_USERS)
-  .mutate(
+  .transform(
     omit(['isOnline']),
     where(isGryffindor, [
       modify(user => user.points += 1000)
