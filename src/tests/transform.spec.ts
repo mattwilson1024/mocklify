@@ -6,26 +6,25 @@ import { IUser, MOCK_TAGS, MOCK_USERS } from './test-data/test-data';
 
 describe('transform()', () => {
 
-
-  it('should allow either an array or multiple operator parameters', () => {
+  it('should allow either an array of operators or multiple operator rest parameters', () => {
     const results1 = mocklify<IUser>()
       .addAll(MOCK_USERS)
       .transform(
-        override({ firstName: 'BARRY' }),
-        override({ firstName: 'SCOTT' })
+        omit(['isAdmin']),
+        override({ points: 999 }),
       )
       .getAll();
 
     const results2 = mocklify<IUser>()
       .addAll(MOCK_USERS)
       .transform([
-        override({ firstName: 'BARRY' }),
-        override({ firstName: 'SCOTT' })
+        omit(['isAdmin']),
+        override({ points: 999 }),
       ])
       .getAll();
 
     expect(results1).toEqual(results2);
-    expect(results1.every(user => user.firstName === 'SCOTT'));
+    expect(results1.every(user => user.isAdmin === undefined && user.points === 999));
   });
 
   it('[omit] should remove the specified properties from the results', () => {
