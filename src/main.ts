@@ -63,8 +63,12 @@ export class MocklifyInstance<T> {
     return this;
   }
 
-  public transform(...operators: Array<Scope<T>|Operator<T>>): MocklifyInstance<T> {
-    this.data = applyOperators(this.data, operators, DEFAULT_LIMITER);
+
+  public transform(...operators: Array<Scope<T>|Operator<T>>): MocklifyInstance<T>;
+  public transform(operators: Array<Scope<T>|Operator<T>>): MocklifyInstance<T>;
+  public transform(operators: any): MocklifyInstance<T> {
+    const operatorsArray = Array.from(arguments).flat();
+    this.data = applyOperators(this.data, operatorsArray, DEFAULT_LIMITER);
     return this;
   }
 

@@ -3,8 +3,33 @@ import { mocklify } from '../main';
 import { modify, omit, override } from '../operators';
 import { where } from '../scopes';
 import { IUser, MOCK_TAGS, MOCK_USERS } from './test-data/test-data';
+import { Scope } from "../scope";
+import { Operator } from "../operator";
 
 describe('transform()', () => {
+
+  it('should allow either an array of operators or multiple operator rest parameters', () => {
+    const results1 = mocklify<IUser>()
+      .addAll(MOCK_USERS)
+      .transform(
+        omit(['isAdmin']),
+        override({ points: 999 }),
+      )
+      .getAll();
+
+    const thingsToDo: Array<Scope<IUser> | Operator<IUser>> = [
+      omit(['isAdmin']),
+      override({ points: 999 }),
+    ]
+
+    const results2 = mocklify<IUser>()
+      .addAll(MOCK_USERS)
+      .transform(thingsToDo)
+      .getAll();
+
+    expect(results1).toEqual(results2);
+    expect(results1.every(user => user.isAdmin === undefined && user.points === 999));
+  });
 
   it('[omit] should remove the specified properties from the results', () => {
     const results = mocklify<IUser>()
