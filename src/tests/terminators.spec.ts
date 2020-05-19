@@ -128,7 +128,7 @@ describe('terminators', () => {
     const whereNameIsHazzer: FilterPredicate<IUser> = user => user.firstName === 'Hazzer';
     const results = mocklify<IUser>()
       .add(1, MOCK_USERS)
-      .mutate(
+      .transform(
         override({firstName: 'Hazzer'})
       )
       .getWhere(whereNameIsHazzer);
