@@ -1,0 +1,45 @@
+{
+  "name": "mocklify",
+  "version": "0.0.0-development",
+  "description": "A powerful and flexible tool for managing mock data",
+  "main": "dist/public-api.js",
+  "types": "dist/public-api.d.ts",
+  "repository": "https://github.com/mattwilson1024/mocklify.git",
+  "author": "Matt Wilson",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "semantic-release": "semantic-release",
+    "contributors:add": "all-contributors add",
+    "contributors:generate": "all-contributors generate"
+  },
+  "devDependencies": {
+    "@babel/core": "7.9.6",
+    "@babel/preset-env": "7.9.6",
+    "@babel/preset-typescript": "7.9.0",
+    "@commitlint/cli": "8.3.5",
+    "@commitlint/config-conventional": "8.3.4",
+    "@semantic-release/changelog": "5.0.1",
+    "@semantic-release/git": "9.0.0",
+    "@types/jest": "25.2.2",
+    "all-contributors-cli": "6.14.2",
+    "babel-jest": "26.0.1",
+    "husky": "4.2.5",
+    "jest": "26.0.1",
+    "semantic-release": "17.0.7",
+    "typescript": "3.9.2"
+  },
+  "dependencies": {
+    "immer": "6.0.5"
+  }
+}
