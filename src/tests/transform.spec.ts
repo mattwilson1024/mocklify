@@ -134,18 +134,18 @@ describe('transform()', () => {
       .addAll(MOCK_USERS)
       .transform(
         omit(['isOnline']),
-        where(isGryffindor, [
+        where(isGryffindor,
           override({ points: 1000 })
-        ]),
-        where(isSlytherin, [
+        ),
+        where(isSlytherin,
           modify(user => user.points = 0)
-        ]),
-        where(isHarry, [
+        ),
+        where(isHarry,
           override({
             points: 9000,
             isAdmin: true
           })
-        ])
+        )
       )
       .getAll();
 
