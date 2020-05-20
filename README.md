@@ -125,12 +125,12 @@ The following diagram shows an example Mocklify pipeline:
 ┌─────────────────────┐                                                           
 │   Transformations   │◀ ─ ─ ─ ─ ─ .transform(                                       
 └─────────────────────┘              omit(['isOnline']),                          
-           │                         where(isGryffindor, [                        
+           │                         where(isGryffindor,                           
            │                           modify(user => user.points += 1000)        
-           │                         ]),                                          
-           │                         where(isSlytherin, [                         
+           │                         ),                                           
+           │                         where(isSlytherin,                           
            │                           override({ points: 0 })                    
-           │                         ]),                                          
+           │                         ),                                           
            ▼                       )                                              
 ┌─────────────────────┐                                                           
 │     Terminator      │◀ ─ ─ ─ ─ ─ .getAll();                                     
@@ -331,7 +331,7 @@ Sometimes, it may be useful to apply transformations only to certain items in th
 
 ## where()
 
-> `where<T>(limiter: Limiter<T>, operators: Operator<T>[])`
+> `where<T>(limiter: Limiter<T>, ...operators: Operator<T>[])`
 
 The `where` scope applies the specified chain of `transformation operators` only to those items that fulfil the criteria defined by the `limiter`.
 
@@ -355,18 +355,18 @@ const results = mocklify<IUser>()
   .addAll(MOCK_USERS)
   .transform(
     omit(['isOnline']),
-    where(isGryffindor, [
+    where(isGryffindor,
       modify(user => user.points += 1000)
-    ]),
-    where(isSlytherin, [
+    ),
+    where(isSlytherin,
       override({ points: 0 })
-    ]),
-    where(isHarry, [
+    ),
+    where(isHarry,
       override({
         points: 9999,
         isAdmin: true
       })
-    ])
+    )
   )
   .getAll();
 ```
