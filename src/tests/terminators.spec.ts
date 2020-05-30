@@ -165,6 +165,22 @@ describe('terminators', () => {
     expect(resultsNegative).toEqual([]);
   });
 
+  it('[getRandomOne] gets a single result, chosen at random', () => {
+    const result = mocklify<IUser>()
+      .addAll(MOCK_USERS)
+      .getRandomOne();
+
+    expect(result).toBeTruthy();
+    expect(result).toEqual(expect.any(Object));
+  });
+
+  it('[getRandomOne] returns undefined if there are no items in the data set', () => {
+    const result = mocklify<IUser>()
+      .getRandomOne();
+
+    expect(result).toBeUndefined();
+  });
+
   it('[getShuffled] returns the same items shuffled into a random order', () => {
     const results = mocklify<IUser>()
       .addAll(MOCK_USERS)

@@ -37,6 +37,7 @@
   - [getOne()](#getOne)
   - [getWhere()](#getWhere)
   - [getRandom()](#getRandom)
+  - [getRandomOne()](#getRandomOne)
   - [getShuffled()](#getShuffled)
 - [Contributors](#contributors-✨)
 
@@ -162,6 +163,7 @@ Terminators [[learn more](#terminators)]
 - `getOne` - returns a single item from the data set that matches a predicate (if multiple items match, the first is returned)
 - `getWhere` - returns any items from the data set which match a predicate
 - `getRandom` - returns a specific number of random items from the data set
+- `getRandomOne` - Returns a single item from the data set, selected at random
 - `getShuffled` - returns all items from the data set, shuffled into a random order
 
 # Data Sources
@@ -426,6 +428,12 @@ Returns any items from the data set which match a predicate.
 > `getRandom(count: number): T[]`
 
 Returns a specific number of random items from the data set.
+
+## getRandomOne()
+
+> `getRandomOne(): T | undefined`
+
+Returns a single item from the data set, selected at random (or undefined if there are no items in the data set).
 
 ## getShuffled()
 

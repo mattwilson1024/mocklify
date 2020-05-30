@@ -108,6 +108,10 @@ export class MocklifyInstance<T> {
     return results;
   }
 
+  public getRandomOne(): T | undefined {
+    return this.getRandom(1)?.[0];
+  }
+
   public getShuffled(): T[] {
     return this.getRandom(this.data.length);
   }
