@@ -211,6 +211,7 @@ export const MOCK_USER_FACTORY = (index: number): IUser => {
     id: `user_${index}`,
     firstName: 'FirstName',
     lastName: 'LastName',
+    isAdmin: false,
     ...
   };
 };
@@ -247,11 +248,11 @@ const twentyGeneratedUsers = mocklify<IUser>()
 
 > `generatePartial(count: number, factory: PartialMockFactory<T>)`
 
-The `generatePartial` method is similar to [generate()](#generate), except that the factory function is not required to specify all required properties of the generated object (i.e. it returns `Partial<T>` instead of `T`).
+The `generatePartial` method is similar to [generate()](#generate), except that the factory function is not required to specify all required properties of the generated object up front (i.e. it returns `Partial<T>` instead of `T`).
 
-This is particularly useful when combined with [transformation operators](#transformation-operators). 
+This simplies the process of creating mock objects and is particularly useful when combined with [transformation operators](#transformation-operators). 
 
-In the example below, the factory function only sets up minimal inforamtion about the user (the `id` property) on the assumption that any other properties of importance will be populated later in the pipeline (by transformation operators):
+In the example below, the factory function only sets up minimal information about the user (the `id` property) on the assumption that any other properties of importance will be populated later in the pipeline (by transformation operators):
 
 ```typescript
 export const PARTIAL_MOCK_USER_FACTORY: PartialMockFactory<IUser> = (index: number): Partial<IUser> => {
@@ -369,7 +370,7 @@ This unlocks a lot of power. For inspiration, here are some examples of how we m
 - "Omit the `lastName` property for a random subset of users"
 - "Set `isOnline` to true for the first 10 users, and false for the rest"
 
-Let's try an example, say I'm not interested in the users' online status, I want to bump the house points of Gryffindors, nuke the points for Slytherins, max out Harry's points and make him and admin for good measure.
+Let's try an example: say I'm not interested in the users' online status, I want to bump the house points of Gryffindors, nuke the points for Slytherins, max out Harry's points and make him an admin for good measure.
 
 This could achieved as follows:
 
