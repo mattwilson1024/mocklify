@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/mattwilson1024/mocklify/compare/v1.1.0...v1.2.0) (2020-06-17)
+
+
+### Features
+
+* add generatePartial data source ([#15](https://github.com/mattwilson1024/mocklify/issues/15)) ([6052c27](https://github.com/mattwilson1024/mocklify/commit/6052c2768fc31ce61f07c6f98c1190390416739f))
+
 # [1.1.0](https://github.com/mattwilson1024/mocklify/compare/v1.0.0...v1.1.0) (2020-05-30)
 
 
