@@ -1,3 +1,5 @@
+import { MockFactory, PartialMockFactory } from '../../main';
+
 export interface ITag {
   id: string;
   name: string;
@@ -1481,7 +1483,7 @@ export const MOCK_USERS: IUser[] = [
   }
 ];
 
-export const MOCK_USER_FACTORY = (index: number): IUser => {
+export const MOCK_USER_FACTORY: MockFactory<IUser> = (index: number): IUser => {
   return {
     id: `user_${index}`,
     firstName: 'FirstName',
@@ -1491,5 +1493,11 @@ export const MOCK_USER_FACTORY = (index: number): IUser => {
     isAdmin: false,
     isOnline: false,
     points: 0
+  };
+};
+
+export const PARTIAL_MOCK_USER_FACTORY: PartialMockFactory<IUser> = (index: number): Partial<IUser> => {
+  return {
+    id: `user_${index}`
   };
 };

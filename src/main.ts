@@ -5,6 +5,7 @@ import { Scope } from './scope';
 export type FilterPredicate<T> = (item: T, index: number, allItems: T[]) => boolean;
 
 export type MockFactory<T> = (index: number) => T;
+export type PartialMockFactory<T> = (index: number) => Partial<T>;
 
 export class MocklifyInstance<T> {
   private data: T[] = [];
@@ -52,6 +53,16 @@ export class MocklifyInstance<T> {
     let newItems: T[] = [];
     for (let i = 0; i < count; i++) {
       newItems.push(factory(i));
+    }
+    this.data = this.data.concat(newItems);
+
+    return this;
+  }
+
+  public generatePartial(count: number, factory: PartialMockFactory<T>): MocklifyInstance<T> {
+    let newItems: T[] = [];
+    for (let i = 0; i < count; i++) {
+      newItems.push(factory(i) as T);
     }
     this.data = this.data.concat(newItems);
 

@@ -20,6 +20,7 @@
   - [add()](#add)
   - [addAll()](#addAll)
   - [generate()](#generate)
+  - [generatePartial()](#generatePartial)
 - [Filters](#filters)
   - [filter()](#filter)
 - [Transformation Operators](#transformation-operators)
@@ -144,6 +145,7 @@ Data Sources [[learn more](#data-sources)]
 - `add` - adds a specified number of predefined mock objects to the data set
 - `addAll` - adds all provided predefined mock objects to the data set
 - `generate` - generates a specific number of new objects using a factory function, and adds them to the data set
+- `generatePartial` - generates a specific number of new objects using a partial factory function, and adds them to the data set
 
 Filters [[learn more](#filters)]
 
@@ -209,6 +211,7 @@ export const MOCK_USER_FACTORY = (index: number): IUser => {
     id: `user_${index}`,
     firstName: 'FirstName',
     lastName: 'LastName',
+    isAdmin: false,
     ...
   };
 };
@@ -226,7 +229,7 @@ For more sophisticated data generation, it is easy to combine Mocklify with othe
 import { mocklify } from 'mocklify';
 import { lorem, name, random } from 'faker';
 
-export const MOCK_USER_FACTORY = (index: number): IUser => {
+export const MOCK_USER_FACTORY: MockFactory<IUser> = (index: number): IUser => {
   return {
     id: random.uuid(),
     firstName: name.firstName(),
@@ -238,6 +241,31 @@ export const MOCK_USER_FACTORY = (index: number): IUser => {
 
 const twentyGeneratedUsers = mocklify<IUser>()
   .generate(20, MOCK_USER_FACTORY)
+  .getAll();
+```
+
+## generatePartial()
+
+> `generatePartial(count: number, factory: PartialMockFactory<T>)`
+
+The `generatePartial` method is similar to [generate()](#generate), except that the factory function is not required to specify all required properties of the generated object up front (i.e. it returns `Partial<T>` instead of `T`).
+
+This simplies the process of creating mock objects and is particularly useful when combined with [transformation operators](#transformation-operators). 
+
+In the example below, the factory function only sets up minimal information about the user (the `id` property) on the assumption that any other properties of importance will be populated later in the pipeline (by transformation operators):
+
+```typescript
+export const PARTIAL_MOCK_USER_FACTORY: PartialMockFactory<IUser> = (index: number): Partial<IUser> => {
+  return {
+    id: `user_${index}`
+  };
+};
+
+const results = mocklify<IUser>()
+  .generatePartial(3, PARTIAL_MOCK_USER_FACTORY)
+  .transform(
+    modify((user, index) => user.firstName = `Generated User ${index + 1}`)
+  )
   .getAll();
 ```
 
@@ -342,7 +370,7 @@ This unlocks a lot of power. For inspiration, here are some examples of how we m
 - "Omit the `lastName` property for a random subset of users"
 - "Set `isOnline` to true for the first 10 users, and false for the rest"
 
-Let's try an example, say I'm not interested in the users' online status, I want to bump the house points of Gryffindors, nuke the points for Slytherins, max out Harry's points and make him and admin for good measure.
+Let's try an example: say I'm not interested in the users' online status, I want to bump the house points of Gryffindors, nuke the points for Slytherins, max out Harry's points and make him an admin for good measure.
 
 This could achieved as follows:
 
