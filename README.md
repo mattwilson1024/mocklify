@@ -19,6 +19,7 @@
 - [Data Sources](#data-sources)
   - [add()](#add)
   - [addAll()](#addAll)
+  - [addOne()](#addOne)
   - [generate()](#generate)
   - [generatePartial()](#generatePartial)
 - [Filters](#filters)
@@ -144,6 +145,7 @@ Data Sources [[learn more](#data-sources)]
 
 - `add` - adds a specified number of predefined mock objects to the data set
 - `addAll` - adds all provided predefined mock objects to the data set
+- `addOne` - adds a single predefined mock objects to the data set
 - `generate` - generates a specific number of new objects using a factory function, and adds them to the data set
 - `generatePartial` - generates a specific number of new objects using a partial factory function, and adds them to the data set
 
@@ -174,7 +176,7 @@ The core state of the Mocklify pipeline is an in-memory set of mock data, in the
 
 At any point in the pipeline (typically the start), items can be _added_ to current data set using any combination of:
 
-- predefined mock objects (using the `add` or `addAll` functions)
+- predefined mock objects (using the `add`, `addAll` or `addOne` functions)
 - generated mock objects (using the `generate` function)
 
 ## add()
@@ -194,6 +196,12 @@ The optional `predicate` parameter allows more control over which items from the
 The `addAll` method pushes all items from a source set of predefined mock objects into the current data set. This is similar to `add()` but is not constrained to a specific length.
 
 The optional `predicate` parameter limits which items are included.
+
+## addOne()
+
+> `addOne(item: T)`
+
+The `addOne` method inserts a single predefined mock object into the current data set. This is eqivalent to `addAll([item])`.
 
 ## generate()
 

@@ -49,6 +49,13 @@ export class MocklifyInstance<T> {
     return this;
   }
 
+  public addOne(item: T): MocklifyInstance<T> {
+    if (item !== null && item !== undefined) {
+      this.data = this.data.concat(item);
+    }
+    return this;
+  }
+
   public generate(count: number, factory: MockFactory<T>): MocklifyInstance<T> {
     let newItems: T[] = [];
     for (let i = 0; i < count; i++) {
