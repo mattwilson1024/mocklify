@@ -1,3 +1,15 @@
+# [1.3.0](https://github.com/mattwilson1024/mocklify/compare/v1.2.0...v1.3.0) (2020-07-02)
+
+
+### Bug Fixes
+
+* Fix invalid use of null & undefined in addOne tests ([#17](https://github.com/mattwilson1024/mocklify/issues/17)) ([e58c61f](https://github.com/mattwilson1024/mocklify/commit/e58c61f3c809dca7ffce44e85f1b04162190cbe7))
+
+
+### Features
+
+* :sparkles: Introduce new `addOne` method for adding a single item ([#16](https://github.com/mattwilson1024/mocklify/issues/16)) ([ea22051](https://github.com/mattwilson1024/mocklify/commit/ea2205107b9468ada33233c64e5227f80d0bb789))
+
 # [1.2.0](https://github.com/mattwilson1024/mocklify/compare/v1.1.0...v1.2.0) (2020-06-17)
 
 
