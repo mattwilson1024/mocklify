@@ -4,23 +4,14 @@ import { IUser, MOCK_USERS } from './test-data/test-data';
 describe('addOne()', () => {
 
   it('adds a single item to the data set', () => {
-    const harry = MOCK_USERS.find(user => user.firstName === 'Harry');
+    const user = MOCK_USERS[0];
 
     const results = mocklify<IUser>()
-      .addOne(harry)
+      .addOne(user)
       .getAll();
 
     expect(results.length).toBe(1);
-    expect(results[0].firstName).toBe('Harry');
-  });
-
-  it('has no effect if passing null or undefined', () => {
-    const results = mocklify<IUser>()
-      .addOne(null)
-      .addOne(undefined)
-      .getAll();
-
-    expect(results.length).toBe(0);
+    expect(results[0].firstName).toBe(MOCK_USERS[0].firstName);
   });
 
 });
