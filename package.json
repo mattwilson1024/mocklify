@@ -10,12 +10,8 @@
   "publishConfig": {
     "access": "public"
   },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
-  },
   "scripts": {
+    "prepare": "husky install",
     "build": "tsc",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -34,7 +30,7 @@
     "@types/jest": "27.0.2",
     "all-contributors-cli": "6.20.0",
     "babel-jest": "27.2.4",
-    "husky": "4.3.0",
+    "husky": "7.0.2",
     "jest": "27.2.4",
     "semantic-release": "18.0.0",
     "typescript": "4.4.3"
