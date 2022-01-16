@@ -231,18 +231,20 @@ const twentyGeneratedUsers = mocklify<IUser>()
 
 The above example will generate 20 users with incrementing IDs, but they will all have the same static `firstName` and `lastName` properties. 
 
-For more sophisticated data generation, it is easy to combine Mocklify with other libraries such as [Faker.js](https://github.com/marak/Faker.js/), like so:
+For more sophisticated data generation, it is easy to combine Mocklify with your own functions (or other libraries) that can generate test data, like so:
 
 ```typescript
 import { mocklify } from 'mocklify';
-import { lorem, name, random } from 'faker';
+import { randomFirstName, randomLastName, randomParagraph, randomUuid, } from './fake-data-utils';
+
+// Imagine you have `randomFirstName`, `randomLastName`, `randomParagraph` and `randomUuid` functions available in `fake-data-utils.ts`...
 
 export const MOCK_USER_FACTORY: MockFactory<IUser> = (index: number): IUser => {
   return {
-    id: random.uuid(),
-    firstName: name.firstName(),
-    lastName: name.lastName(),
-    note: lorem.paragraph(),
+    id: randomUuid(),
+    firstName: randomFirstName(),
+    lastName: randomLastName(),
+    note: randomParagraph(),
     ...
   };
 };
