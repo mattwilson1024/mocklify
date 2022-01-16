@@ -1,3 +1,11 @@
+# [1.4.0](https://github.com/mattwilson1024/mocklify/compare/v1.3.0...v1.4.0) (2022-01-16)
+
+
+### Features
+
+* **deps:** update dependencies ([#46](https://github.com/mattwilson1024/mocklify/issues/46)) ([f350cb9](https://github.com/mattwilson1024/mocklify/commit/f350cb9f00a6536d6ffb95edc234685b175bbaf0))
+* **tooling:** update commitlint config ([#47](https://github.com/mattwilson1024/mocklify/issues/47)) ([248f60a](https://github.com/mattwilson1024/mocklify/commit/248f60ad2d2eae227e9f0e29923659d1a4fde2a7))
+
 # [1.3.0](https://github.com/mattwilson1024/mocklify/compare/v1.2.0...v1.3.0) (2020-07-02)
 
 
